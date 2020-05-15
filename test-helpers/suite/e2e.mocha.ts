@@ -6,7 +6,7 @@ export function createMochaRunner(testsRoot: string) {
 	return function run(): Promise<void> {
 		// Create the mocha test
 		const mocha = new Mocha({
-			ui: 'tdd',
+			ui: 'bdd',
 			color: true
 		});
 
