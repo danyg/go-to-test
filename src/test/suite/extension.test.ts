@@ -5,11 +5,20 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 // import * as myExtension from '../../extension';
 
+const assertMatch = (text: String, regexp: RegExp) => {
+	if (text.match(regexp) === null) {
+
+		throw new assert.AssertionError({
+			message: `"${text}" does NOT match with "${regexp.toString()}"`
+		});
+	}
+};
+
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
-	test('Sample test', () => {
-		assert.equal(-1, [1, 2, 3].indexOf(5));
-		assert.equal(-1, [1, 2, 3].indexOf(0));
+	test('Test Preconditions are met', () => {
+		assert.notEqual(vscode.workspace.rootPath, undefined, "wsFolder should not be undefined");
+		assertMatch(vscode.workspace.rootPath ?? "", /.*test-fixtures.*/);
 	});
 });
