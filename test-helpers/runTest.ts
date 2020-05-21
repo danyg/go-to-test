@@ -5,7 +5,7 @@ import { srcPath, testHelpersPath, projectPath } from './test-paths';
 
 async function main() {
 	try {
-		const extensionDevelopmentPath = srcPath;
+		const extensionDevelopmentPath = projectPath;
 		const suiteExecutorPath = path.resolve(testHelpersPath, './suite/index');
 		const testWorkspace = path.resolve(projectPath, './test-fixtures');
 
@@ -13,6 +13,7 @@ async function main() {
 
 		// Download VS Code, unzip it and run the integration test
 		await runTests({
+			// version: 'insiders',
 			extensionDevelopmentPath,
 			extensionTestsPath: suiteExecutorPath,
 			launchArgs: [testWorkspace]
