@@ -1,14 +1,7 @@
 import * as expect from 'expect';
 import * as vscode from 'vscode';
 import { given, when, then } from '../test-helpers/gramar-bdd';
-// import * as myExtension from '../../extension';
-
-const rts = (toConvert: string | RegExp) =>
-  toConvert instanceof RegExp ? toConvert.source : toConvert;
-
-const pathOsAgnostic = (pathStr: string | RegExp) =>
-  new RegExp(rts(pathStr).replace(/\//g, '[/\\\\]'));
-const endWith = (toConvert: string | RegExp) => new RegExp(`${rts(toConvert)}$`);
+import { endWith, pathOsAgnostic } from '../test-helpers/path-helpers';
 
 describe('Extension Test Suite', () => {
   // before(async () => vscode.window.showInformationMessage('Start all tests.'));
