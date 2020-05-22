@@ -11,7 +11,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const testFile = currentFile.replace(/^(.*)\.([tj]sx?)$/, "$1.test$2");
 
 		vscode.workspace.openTextDocument(testFile);
-		// vscode.window.showInformationMessage('Hello World from Go To Test!');
+		vscode.window.showInformationMessage('Hello World from Go To Test!');
 		// vscode.workspace.openTextDocument(file);
 	});
 
