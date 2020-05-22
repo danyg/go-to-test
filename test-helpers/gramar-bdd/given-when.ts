@@ -1,17 +1,16 @@
-import User from "./actors/user";
+import User from './actors/user';
 
 class Lexic {
-	public static getInstance() {
-		return new Lexic();
-	}
+  public static getInstance() {
+    return new Lexic();
+  }
 
-	private constructor() { }
+  private constructor() {}
 
-	public user() {
-		return User.getInstance();
-	}
+  public user() {
+    return User.getInstance();
+  }
 }
-
 
 export const given = () => Lexic.getInstance();
 export const when = () => Lexic.getInstance();

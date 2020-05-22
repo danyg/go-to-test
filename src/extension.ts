@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 console.log('Go To Test Loaded!');
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext): void {
   console.log('Go To Test ACTIVATED!');
   vscode.window.showInformationMessage('Go To Test ACTIVATED!');
   const disposable = vscode.commands.registerCommand('danyg-go-to-test.goToTest', async () => {
@@ -30,4 +30,4 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-export function deactivate() {}
+// export function deactivate() {}
