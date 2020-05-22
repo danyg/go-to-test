@@ -11,7 +11,7 @@ export function createMochaRunner(testsRoot: string) {
     });
 
     return new Promise((c, e) => {
-      glob('**/**.test.js', { cwd: testsRoot }, (err, files) => {
+      glob('**/**.e2e-test.js', { cwd: testsRoot }, (err, files) => {
         if (err) {
           return e(err);
         }
