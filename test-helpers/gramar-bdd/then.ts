@@ -1,11 +1,13 @@
 import * as expect from 'expect';
 
 class Then {
-	private expectAccessor = { expect };
+  private expectAccessor = { expect };
 
-	I() {
-		return this.expectAccessor;
-	}
+  I() {
+    return this.expectAccessor;
+  }
+
+  isExpected = expect;
 }
 
 export const then = () => new Then();
