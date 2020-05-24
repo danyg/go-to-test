@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as Mocha from 'mocha';
 import * as glob from 'glob';
 
-export function createMochaRunner(testsRoot: string) {
+export function createMochaRunner(testsRoot: string, pattern: string) {
   return function run(): Promise<void> {
     // Create the mocha test
     const mocha = new Mocha({
@@ -11,7 +11,7 @@ export function createMochaRunner(testsRoot: string) {
     });
 
     return new Promise((c, e) => {
-      glob('**/**.e2e-test.js', { cwd: testsRoot }, (err, files) => {
+      glob(pattern, { cwd: testsRoot }, (err, files) => {
         if (err) {
           return e(err);
         }
