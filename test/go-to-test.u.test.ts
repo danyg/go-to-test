@@ -6,7 +6,7 @@ import SystemMock from './mocks/system-mock';
 import { System } from '../src/interfaces/system';
 import { GoToTest } from '../src/go-to-test';
 
-describe('this is just a test of the test', () => {
+describe('GoToTest', () => {
   it('should do nothing WHEN command is triggered and there is no active editor', async () => {
     const testSubject = buildTestSubject();
     when(SystemMock.getActiveTextEditorFilePath()).thenReturn(null);
