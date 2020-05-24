@@ -1,6 +1,6 @@
-import { ExtensionContext } from './disposable';
-import { System } from './system';
-import { UserInterface } from './user-interface';
+import { ExtensionContext } from './interfaces/disposable';
+import { System } from './interfaces/system';
+import { UserInterface } from './interfaces/user-interface';
 
 export class GoToTest {
   public constructor(private system: System, private ui: UserInterface) {

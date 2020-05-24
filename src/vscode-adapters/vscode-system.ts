@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { System } from './system';
+import { System } from '../interfaces/system';
 
 export class VsCodeSystem implements System {
   public registerCommand = vscode.commands.registerCommand;

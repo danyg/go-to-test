@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { UserInterface } from './user-interface';
+import { UserInterface } from '../interfaces/user-interface';
 
 export class VSCodeUI implements UserInterface {
   info(message: string): void {
