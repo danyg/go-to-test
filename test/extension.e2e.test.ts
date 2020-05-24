@@ -5,7 +5,7 @@ import { endWith, pathOsAgnostic } from '../test-helpers/path-helpers';
 
 describe('Extension Test Suite', () => {
   it('Test Preconditions are met', () => {
-    const rootPath = vscode.workspace.workspaceFolders![0].uri.fsPath;
+    const rootPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
     expect(rootPath).not.toBeUndefined();
     expect(rootPath).toMatch(/.*test-fixtures.*/);
   });
