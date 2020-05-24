@@ -28,7 +28,7 @@
     "lint": "eslint ./ --ext ts",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
-    "test": "node ./out/test-helpers/runTest.js"
+    "test": "node ./out/test-helpers/run-e2e-tests.js"
   },
   "husky": {
     "hooks": {

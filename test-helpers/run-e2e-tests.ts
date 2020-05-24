@@ -9,7 +9,13 @@ async function main() {
     const suiteExecutorPath = path.resolve(testHelpersPath, './suite/index');
     const testWorkspace = path.resolve(projectPath, './test-fixtures');
 
-    console.log(`TESTING INTO: ${testWorkspace}`);
+    console.log(
+      '\u001b[1;36m',
+      `extensionDevelopmentPath: ${extensionDevelopmentPath}`,
+      '\u001b[0m'
+    );
+    console.log('\u001b[1;36m', `suiteExecutorPath:        ${suiteExecutorPath}`, '\u001b[0m');
+    console.log('\u001b[1;36m', `testWorkspace:            ${testWorkspace}`, '\u001b[0m');
 
     // Download VS Code, unzip it and run the integration test
     await runTests({
