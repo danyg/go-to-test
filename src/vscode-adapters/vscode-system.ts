@@ -3,9 +3,11 @@ import { System } from '../interfaces/system';
 
 export class VsCodeSystem implements System {
   public registerCommand = vscode.commands.registerCommand;
+
   public getActiveTextEditorFilePath() {
     return vscode.window.activeTextEditor!.document.fileName;
   }
+
   public async openFileInEditor(filePath: string) {
     const uri = vscode.Uri.file(filePath);
     const doc: vscode.TextDocument = await vscode.workspace.openTextDocument(uri);
