@@ -20,8 +20,10 @@ export class GoToTest {
   public async executeCommand() {
     console.log('Go To Test executed!');
     const currentFile = this.system.getActiveTextEditorFilePath();
-    const testFilePath = this.getTestFilePath(currentFile);
-    await this.system.openFileInEditor(testFilePath);
+    if (null !== currentFile) {
+      const testFilePath = this.getTestFilePath(currentFile);
+      await this.system.openFileInEditor(testFilePath);
+    }
   }
 
   private getTestFilePath(srcFilePath: string): string {

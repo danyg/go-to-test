@@ -4,8 +4,12 @@ import { System } from '../interfaces/system';
 export class VsCodeSystem implements System {
   public registerCommand = vscode.commands.registerCommand;
 
-  public getActiveTextEditorFilePath() {
-    return vscode.window.activeTextEditor!.document.fileName;
+  public getActiveTextEditorFilePath(): string | null {
+    if (!vscode.window.activeTextEditor) {
+      return null;
+    }
+
+    return vscode.window.activeTextEditor.document.fileName;
   }
 
   public async openFileInEditor(filePath: string) {
