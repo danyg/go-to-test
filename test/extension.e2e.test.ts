@@ -10,7 +10,7 @@ describe('Extension Test Suite', () => {
     expect(rootPath).toMatch(/.*test-fixtures.*/);
   });
 
-  it('should go to a test file using maven strategy', async () => {
+  it('should go to a test file using maven like strategy', async () => {
     await given().user().opensFile('/maven-strategy/src/package1/source.code.js');
 
     await when().user().goesToTest();

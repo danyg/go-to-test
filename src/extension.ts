@@ -4,7 +4,7 @@ import { GoToTest } from './go-to-test';
 import { Configuration, StrategyOption } from './interfaces/configuration';
 
 const configMock: Configuration = {
-  strategy: StrategyOption.MAVEN,
+  strategy: StrategyOption.MAVEN_LIKE,
   match: /nop/,
   replace: 'nop'
 };
