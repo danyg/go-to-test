@@ -10,10 +10,7 @@
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "${workspaceFolder}/test-fixtures"
-      ],
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/test-fixtures"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
       "preLaunchTask": "${defaultBuildTask}"
     },
@@ -28,6 +25,14 @@
         "${workspaceFolder}/test-fixtures"
       ],
       "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
+      "preLaunchTask": "${defaultBuildTask}"
+    },
+    {
+      "name": "Unit-Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "node",
+      "args": ["out/test-helpers/run-unit-tests.js"],
       "preLaunchTask": "${defaultBuildTask}"
     }
   ]
