@@ -1,10 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as vscode from 'vscode';
 
-export interface UI {
+export interface UserInterface {
   info(message: string): void;
 }
 
-class VSCodeUI implements UI {
+export interface Disposable {
+  dispose(): void;
+}
+
+interface ExtensionContext {
+  subscriptions: Disposable[];
+}
+
+type Command = (...args: any[]) => any;
+
+export interface System {
+  registerCommand(command: string, callback: Command, thisArg?: any): Disposable;
+  getActiveTextEditorFilePath(): string;
+}
+
+export class VsCodeSystem implements System {
+  public registerCommand = vscode.commands.registerCommand;
+  public getActiveTextEditorFilePath() {
+    return vscode.window.activeTextEditor!.document.fileName;
+  }
+}
+
+class VSCodeUI implements UserInterface {
   info(message: string): void {
     console.log(`[INFO]: ${message}`);
     vscode.window.showInformationMessage(message);
@@ -12,11 +35,11 @@ class VSCodeUI implements UI {
 }
 
 export class GoToTest {
-  public constructor(private ui: UI) {
+  public constructor(private system: System, private ui: UserInterface) {
     console.log('Go To Test Loaded!');
   }
 
-  public activate(context: vscode.ExtensionContext) {
+  public activate(context: ExtensionContext) {
     this.ui.info('Go To Test ACTIVATED!');
 
     const disposable = this.registerTheCommand();
@@ -25,22 +48,15 @@ export class GoToTest {
   }
 
   private registerTheCommand() {
-    return vscode.commands.registerCommand(
-      'danyg-go-to-test.goToTest',
-      this.executeCommand.bind(this)
-    );
+    return this.system.registerCommand('danyg-go-to-test.goToTest', this.executeCommand.bind(this));
   }
 
   public async executeCommand() {
     console.log('Go To Test executed!');
-    const currentFile = this.getActiveTextEditorFilePath();
+    const currentFile = this.system.getActiveTextEditorFilePath();
     const testFile = this.getTestFile(currentFile);
 
     await this.openFileInEditor(testFile);
-  }
-
-  private getActiveTextEditorFilePath() {
-    return vscode.window.activeTextEditor!.document.fileName;
   }
 
   private async openFileInEditor(testFile: vscode.Uri) {
@@ -67,7 +83,7 @@ export class GoToTest {
   }
 }
 
-const goToTestExtension = new GoToTest(new VSCodeUI());
+const goToTestExtension = new GoToTest(new VsCodeSystem(), new VSCodeUI());
 
 export const activate = goToTestExtension.activate.bind(goToTestExtension);
 // export function deactivate() {}
