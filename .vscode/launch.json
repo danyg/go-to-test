@@ -33,7 +33,8 @@
       "request": "launch",
       "runtimeExecutable": "node",
       "args": ["out/test-helpers/run-unit-tests.js"],
-      "preLaunchTask": "${defaultBuildTask}"
+      "preLaunchTask": "${defaultBuildTask}",
+      "console": "integratedTerminal"
     }
   ]
 }
