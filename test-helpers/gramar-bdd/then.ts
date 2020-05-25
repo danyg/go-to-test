@@ -26,10 +26,10 @@ export const then = () => new Then();
 
 function grammarExpect(): Then;
 function grammarExpect<T>(arg: T): Matchers<T>;
-function grammarExpect(...args: any | never) {
+function grammarExpect<T>(...args: T[] | never) {
   if (args.length === 0) {
     return then();
   } else {
-    return expect(args[0]);
+    return expect<T>(args[0]);
   }
 }
