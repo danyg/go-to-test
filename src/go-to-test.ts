@@ -5,6 +5,7 @@ import Configuration, { StrategyOption } from './interfaces/configuration';
 import Strategy from './interfaces/strategy';
 import MavenStrategy from './strategies/maven-strategy';
 import MavenLikeStrategy from './strategies/maven-like-strategy';
+import SameDirectoryStrategy from './strategies/same-directory-strategy';
 
 export default class GoToTest {
   private strategies: Map<StrategyOption, Strategy>;
@@ -16,7 +17,8 @@ export default class GoToTest {
   ) {
     this.strategies = new Map<StrategyOption, Strategy>([
       [StrategyOption.MAVEN, MavenStrategy.getInstance()],
-      [StrategyOption.MAVEN_LIKE, MavenLikeStrategy.getInstance()]
+      [StrategyOption.MAVEN_LIKE, MavenLikeStrategy.getInstance()],
+      [StrategyOption.SAME_DIRECTORY, SameDirectoryStrategy.getInstance()]
     ]);
 
     console.log('Go To Test Loaded!');

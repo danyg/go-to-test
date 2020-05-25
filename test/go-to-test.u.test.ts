@@ -48,6 +48,20 @@ describe('GoToTest', () => {
       expect(firstArg).toEqual('/test/my-file.test.js');
     });
   });
+
+  describe('Same Directory Strategy', () => {
+    it('should use maven-like strategy WHEN the configuration says so', async () => {
+      const testSubject = buildTestSubject(
+        ConfigurationDouble.getInstance().withStrategy(StrategyOption.SAME_DIRECTORY)
+      );
+      when(SystemMock.getActiveTextEditorFilePath()).thenReturn('/src/my-file.js');
+
+      await testSubject.executeCommand();
+
+      const [firstArg] = capture(SystemMock.openFileInEditor).last();
+      expect(firstArg).toEqual('/src/my-file.test.js');
+    });
+  });
 });
 
 const defaultConfiguration = ConfigurationDouble.getInstance().withStrategy(
