@@ -1,4 +1,5 @@
 import User from './actors/user';
+import VSCode from './actors/vscode';
 
 class Lexic {
   public static getInstance() {
@@ -9,6 +10,10 @@ class Lexic {
 
   public user() {
     return User.getInstance();
+  }
+
+  public vscode() {
+    return VSCode.getInstance();
   }
 }
 

@@ -20,6 +20,13 @@ export default class User {
     return vscode.commands.executeCommand('danyg-go-to-test.goToTest');
   }
 
+  public had(): User {
+    return this;
+  }
+
+  public openAFile = this.opensFile;
+  public wentToTest = this.goesToTest;
+
   private getFirstWorkspaceFolder(): vscode.WorkspaceFolder {
     const wsf = vscode.workspace.workspaceFolders;
     this.assertInWorkspace(wsf);
