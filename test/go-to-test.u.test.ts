@@ -40,12 +40,14 @@ describe('GoToTest', () => {
       const testSubject = buildTestSubject(
         ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
       );
-      when(SystemMock.getActiveTextEditorFilePath()).thenReturn('/src/my-file.js');
+      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
+        '/src/module/sub-module/sub-sub-module/my-file.js'
+      );
 
       await testSubject.executeCommand();
 
       const [firstArg] = capture(SystemMock.openFileInEditor).last();
-      expect(firstArg).toEqual('/test/my-file.test.js');
+      expect(firstArg).toEqual('/test/module/sub-module/sub-sub-module/my-file.test.js');
     });
   });
 
@@ -54,12 +56,30 @@ describe('GoToTest', () => {
       const testSubject = buildTestSubject(
         ConfigurationDouble.getInstance().withStrategy(StrategyOption.SAME_DIRECTORY)
       );
-      when(SystemMock.getActiveTextEditorFilePath()).thenReturn('/src/my-file.js');
+      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
+        '/src/module/sub-module/sub-sub-module/my-file.js'
+      );
 
       await testSubject.executeCommand();
 
       const [firstArg] = capture(SystemMock.openFileInEditor).last();
-      expect(firstArg).toEqual('/src/my-file.test.js');
+      expect(firstArg).toEqual('/src/module/sub-module/sub-sub-module/my-file.test.js');
+    });
+  });
+
+  describe('__TESTS__ Strategy', () => {
+    it('should use maven-like strategy WHEN the configuration says so', async () => {
+      const testSubject = buildTestSubject(
+        ConfigurationDouble.getInstance().withStrategy(StrategyOption.__TESTS__)
+      );
+      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
+        '/src/module/sub-module/sub-sub-module/my-file.js'
+      );
+
+      await testSubject.executeCommand();
+
+      const [firstArg] = capture(SystemMock.openFileInEditor).last();
+      expect(firstArg).toEqual('/src/module/sub-module/sub-sub-module/__tests__/my-file.js');
     });
   });
 });
