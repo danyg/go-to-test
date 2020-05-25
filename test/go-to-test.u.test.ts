@@ -1,10 +1,10 @@
 // import * as expect from 'expect';
 import { when, anyString, verify, instance, capture } from 'ts-mockito';
-import { UserInterface } from '../src/interfaces/user-interface';
+import UserInterface from '../src/interfaces/user-interface';
 import UIMock from './mocks/ui-mock';
 import SystemMock from './mocks/system-mock';
-import { System } from '../src/interfaces/system';
-import { GoToTest } from '../src/go-to-test';
+import System from '../src/interfaces/system';
+import GoToTest from '../src/go-to-test';
 import { ConfigurationDouble } from './mocks/configuration-double';
 import { StrategyOption } from '../src/interfaces/configuration';
 import * as expect from 'expect';

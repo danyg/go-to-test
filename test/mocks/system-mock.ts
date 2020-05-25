@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { System, Command } from '../../src/interfaces/system';
+import System, { Command } from '../../src/interfaces/system';
 import { Disposable } from '../../src/interfaces/disposable';
 import { mock } from 'ts-mockito';
 

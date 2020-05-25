@@ -1,7 +1,11 @@
 import * as vscode from 'vscode';
-import { System } from '../interfaces/system';
+import System from '../interfaces/system';
 
-export class VsCodeSystem implements System {
+export default class VsCodeSystem implements System {
+  public static getInstance() {
+    return new VsCodeSystem();
+  }
+
   public registerCommand = vscode.commands.registerCommand;
 
   public getActiveTextEditorFilePath(): string | null {

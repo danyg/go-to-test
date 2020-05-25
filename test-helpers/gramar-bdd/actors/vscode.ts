@@ -5,38 +5,38 @@ class VSCodeConfig {
     return new VSCodeConfig();
   }
 
-  public withMavenLikeStrategy() {
-    this.setConfig('goToTest.strategy', 'maven-like');
+  public async withMavenLikeStrategy() {
+    await this.setConfig('goToTest.strategy', 'maven-like');
   }
 
-  public withMavenStrategy() {
-    this.setConfig('goToTest.strategy', 'maven');
+  public async withMavenStrategy() {
+    await this.setConfig('goToTest.strategy', 'maven');
   }
 
-  public withSameDirectoryStrategy() {
-    this.setConfig('goToTest.strategy', 'same-directory');
+  public async withSameDirectoryStrategy() {
+    await this.setConfig('goToTest.strategy', 'same-directory');
   }
 
-  public withUnderscoreUnderscoreTestsUnderscoreUnderscoreStrategy() {
-    this.setConfig('goToTest.strategy', '__tests__');
+  public async withUnderscoreUnderscoreTestsUnderscoreUnderscoreStrategy() {
+    await this.setConfig('goToTest.strategy', '__tests__');
   }
 
-  public withCustomStrategy() {
-    this.setConfig('goToTest.strategy', 'custom');
+  public async withCustomStrategy() {
+    await this.setConfig('goToTest.strategy', 'custom');
     return this;
   }
 
-  public andMatch(match: string) {
-    this.setConfig('goToTest.match', match);
+  public async andMatch(match: string) {
+    await this.setConfig('goToTest.match', match);
     return this;
   }
 
-  public andReplace(replace: string) {
-    this.setConfig('goToTest.replace', replace);
+  public async andReplace(replace: string) {
+    await this.setConfig('goToTest.replace', replace);
     return this;
   }
 
-  private setConfig(section: string, value: string) {
+  private async setConfig(section: string, value: string) {
     return vscode.workspace.getConfiguration().update(section, value);
   }
 }

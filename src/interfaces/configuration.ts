@@ -6,7 +6,7 @@ export enum StrategyOption {
   CUSTOM
 }
 
-export interface Configuration {
+export default interface Configuration {
   readonly strategy: StrategyOption;
   readonly match: RegExp;
   readonly replace: string;

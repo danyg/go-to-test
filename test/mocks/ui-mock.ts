@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { UserInterface } from '../../src/interfaces/user-interface';
+import UserInterface from '../../src/interfaces/user-interface';
 import { mock } from 'ts-mockito';
 
 class UIDouble implements UserInterface {

@@ -1,7 +1,11 @@
 import * as vscode from 'vscode';
-import { UserInterface } from '../interfaces/user-interface';
+import UserInterface from '../interfaces/user-interface';
 
-export class VSCodeUI implements UserInterface {
+export default class VSCodeUI implements UserInterface {
+  public static getInstance() {
+    return new VSCodeUI();
+  }
+
   info(message: string): void {
     console.log(`[INFO]: ${message}`);
     vscode.window.showInformationMessage(message);

@@ -1,13 +1,12 @@
 import { ExtensionContext } from './interfaces/disposable';
-import { System } from './interfaces/system';
-import { UserInterface } from './interfaces/user-interface';
-import { Configuration } from './interfaces/configuration';
-import { StrategyOption } from './interfaces/configuration';
+import System from './interfaces/system';
+import UserInterface from './interfaces/user-interface';
+import Configuration, { StrategyOption } from './interfaces/configuration';
 import Strategy from './interfaces/strategy';
 import MavenStrategy from './strategies/maven-strategy';
 import MavenLikeStrategy from './strategies/maven-like-strategy';
 
-export class GoToTest {
+export default class GoToTest {
   private strategies: Map<StrategyOption, Strategy>;
 
   public constructor(
