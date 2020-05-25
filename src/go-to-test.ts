@@ -7,6 +7,7 @@ import MavenStrategy from './strategies/maven-strategy';
 import MavenLikeStrategy from './strategies/maven-like-strategy';
 import SameDirectoryStrategy from './strategies/same-directory-strategy';
 import UUTestsUUStrategy from './strategies/__tests__-strategy';
+import CustomStrategy from './strategies/custom-strategy';
 
 export default class GoToTest {
   private strategies: Map<StrategyOption, Strategy>;
@@ -20,7 +21,8 @@ export default class GoToTest {
       [StrategyOption.MAVEN, MavenStrategy.getInstance()],
       [StrategyOption.MAVEN_LIKE, MavenLikeStrategy.getInstance()],
       [StrategyOption.SAME_DIRECTORY, SameDirectoryStrategy.getInstance()],
-      [StrategyOption.__TESTS__, UUTestsUUStrategy.getInstance()]
+      [StrategyOption.__TESTS__, UUTestsUUStrategy.getInstance()],
+      [StrategyOption.CUSTOM, CustomStrategy.getInstance(configuration)]
     ]);
 
     console.log('Go To Test Loaded!');

@@ -52,7 +52,7 @@ describe('GoToTest', () => {
   });
 
   describe('Same Directory Strategy', () => {
-    it('should use maven-like strategy WHEN the configuration says so', async () => {
+    it('should use same-directory strategy WHEN the configuration says so', async () => {
       const testSubject = buildTestSubject(
         ConfigurationDouble.getInstance().withStrategy(StrategyOption.SAME_DIRECTORY)
       );
@@ -68,7 +68,7 @@ describe('GoToTest', () => {
   });
 
   describe('__TESTS__ Strategy', () => {
-    it('should use maven-like strategy WHEN the configuration says so', async () => {
+    it('should use __TESTS__ strategy WHEN the configuration says so', async () => {
       const testSubject = buildTestSubject(
         ConfigurationDouble.getInstance().withStrategy(StrategyOption.__TESTS__)
       );
@@ -80,6 +80,28 @@ describe('GoToTest', () => {
 
       const [firstArg] = capture(SystemMock.openFileInEditor).last();
       expect(firstArg).toEqual('/src/module/sub-module/sub-sub-module/__tests__/my-file.js');
+    });
+  });
+
+  describe('Custom Strategy', () => {
+    it('should use custom strategy WHEN the configuration says so', async () => {
+      const testSubject = buildTestSubject(
+        ConfigurationDouble.getInstance()
+          .withStrategy(StrategyOption.CUSTOM)
+          .withMatch(/(.*)\/([^\/]+)\.([\w]+)/)
+          .withReplace('_TESTS_$1/$2.IntegrationTest.$3')
+      );
+
+      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
+        '/src/module/sub-module/sub-sub-module/my-file.js'
+      );
+
+      await testSubject.executeCommand();
+
+      const [firstArg] = capture(SystemMock.openFileInEditor).last();
+      expect(firstArg).toEqual(
+        '_TESTS_/src/module/sub-module/sub-sub-module/my-file.IntegrationTest.js'
+      );
     });
   });
 });
