@@ -49,6 +49,36 @@ describe('GoToTest', () => {
       const [firstArg] = capture(SystemMock.openFileInEditor).last();
       expect(firstArg).toEqual('/test/module/sub-module/sub-sub-module/my-file.test.js');
     });
+
+    it('should use the nested `src` directory as projectPath', async () => {
+      const testSubject = buildTestSubject(
+        ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
+      );
+      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
+        '/src/module/src/sub-module/src/sub-sub-module/src/libs/my-file.js'
+      );
+
+      await testSubject.executeCommand();
+
+      const [firstArg] = capture(SystemMock.openFileInEditor).last();
+      expect(firstArg).toEqual(
+        '/src/module/src/sub-module/src/sub-sub-module/test/libs/my-file.test.js'
+      );
+    });
+
+    it('should work with any extension', async () => {
+      const testSubject = buildTestSubject(
+        ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
+      );
+      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
+        '/src/libs/my-file.thisIsAVerboseExtension'
+      );
+
+      await testSubject.executeCommand();
+
+      const [firstArg] = capture(SystemMock.openFileInEditor).last();
+      expect(firstArg).toEqual('/test/libs/my-file.test.thisIsAVerboseExtension');
+    });
   });
 
   describe('Same Directory Strategy', () => {
