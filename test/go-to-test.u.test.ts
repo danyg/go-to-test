@@ -1,5 +1,5 @@
 // import * as expect from 'expect';
-import { instance } from 'ts-mockito';
+import { verify, instance } from 'ts-mockito';
 import * as expect from 'expect';
 
 import GoToTest from '../src/go-to-test';
@@ -14,9 +14,9 @@ import { ConfigurationDouble } from './mocks/configuration-double';
 describe('GoToTest', () => {
   it('should do nothing WHEN command is triggered and there is no active editor', async () => {
     const { given, when, then } = TestBuilder.build();
-    given.anyConfiguration();
+    given.anyConfiguration().and.theUserHaveNotOpenedAnyFileYet();
 
-    when.goToTestIsActioned();
+    await when.goToTestIsActioned();
 
     then.nothingIsDone();
   });
@@ -30,7 +30,7 @@ describe('GoToTest', () => {
         )
         .and.theUserOpens('/src/main/java/com/company/package/MyClass.java');
 
-      when.goToTestIsActioned();
+      await when.goToTestIsActioned();
 
       then.theTestFile('/src/test/java/com/company/package/MyClassTest.java').isOpened();
     });
@@ -45,7 +45,7 @@ describe('GoToTest', () => {
         )
         .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
 
-      when.goToTestIsActioned();
+      await when.goToTestIsActioned();
 
       then.theTestFile('/test/module/sub-module/sub-sub-module/my-file.test.js').isOpened();
     });
@@ -58,7 +58,7 @@ describe('GoToTest', () => {
         )
         .and.theUserOpens('/src/module/src/sub-module/src/sub-sub-module/src/libs/my-file.js');
 
-      when.goToTestIsActioned();
+      await when.goToTestIsActioned();
 
       then
         .theTestFile('/src/module/src/sub-module/src/sub-sub-module/test/libs/my-file.test.js')
@@ -73,7 +73,7 @@ describe('GoToTest', () => {
         )
         .and.theUserOpens('/src/libs/my-file.thisIsAVerboseExtension');
 
-      when.goToTestIsActioned();
+      await when.goToTestIsActioned();
 
       then.theTestFile('/test/libs/my-file.test.thisIsAVerboseExtension').isOpened();
     });
@@ -88,7 +88,7 @@ describe('GoToTest', () => {
         )
         .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
 
-      when.goToTestIsActioned();
+      await when.goToTestIsActioned();
 
       then.theTestFile('/src/module/sub-module/sub-sub-module/my-file.test.js').isOpened();
     });
@@ -103,7 +103,7 @@ describe('GoToTest', () => {
         )
         .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
 
-      when.goToTestIsActioned();
+      await when.goToTestIsActioned();
 
       then.theTestFile('/src/module/sub-module/sub-sub-module/__tests__/my-file.js').isOpened();
     });
@@ -121,11 +121,26 @@ describe('GoToTest', () => {
         )
         .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
 
-      when.goToTestIsActioned();
+      await when.goToTestIsActioned();
 
       then
         .theTestFile('testGoesHere/src/module/sub-module/sub-sub-module/my-file.IntegrationTest.js')
         .isOpened();
+    });
+  });
+
+  describe('Invalid strategy', () => {
+    it('should use __TESTS__ strategy WHEN the configuration says so', async () => {
+      let error: Error = new Error('not the error you want!');
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(ConfigurationDouble.getInstance().withInvalidStrategy())
+        .and.theUserOpens('/src/my-file.js');
+
+      await when.goToTestIsActioned().catch((e) => (error = e));
+
+      then.userIsInformedAboutWrongStrategy();
+      expect(error.message).toEqual('Given Strategy is incorrect.');
     });
   });
 });
@@ -203,7 +218,6 @@ class TestBuilder {
 
   public async goToTestIsActioned() {
     await this.system.__ExecuteCommand('danyg-go-to-test.goToTest');
-    // await this.testSubject.executeCommand();
   }
 
   // Then
@@ -220,6 +234,10 @@ class TestBuilder {
   }
 
   public nothingIsDone() {
-    expect(this.system.__IS_NOT_OpenedFilePath());
+    expect(this.system.__IS_NOT_OpenedFilePath()).toBe(true);
+  }
+
+  public userIsInformedAboutWrongStrategy() {
+    verify(UIMock.alertUserOfWrongStrategyOnConfiguration()).once();
   }
 }

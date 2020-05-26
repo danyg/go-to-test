@@ -10,4 +10,10 @@ export default class VSCodeUI implements UserInterface {
     console.log(`[INFO]: ${message}`);
     vscode.window.showInformationMessage(message);
   }
+
+  public async alertUserOfWrongStrategyOnConfiguration() {
+    vscode.window.showErrorMessage(
+      'Go To Test Extension: The given value on go-to-test.strategy is not valid.'
+    );
+  }
 }

@@ -24,8 +24,6 @@ export default class GoToTest {
       [StrategyOption.__TESTS__, UUTestsUUStrategy.getInstance()],
       [StrategyOption.CUSTOM, CustomStrategy.getInstance(configuration)]
     ]);
-
-    console.log('Go To Test Loaded!');
   }
 
   public activate(context: ExtensionContext) {
@@ -37,7 +35,7 @@ export default class GoToTest {
     return this.system.registerCommand('danyg-go-to-test.goToTest', this.executeCommand.bind(this));
   }
 
-  public async executeCommand() {
+  private async executeCommand() {
     const currentFile = this.system.getActiveTextEditorFilePath();
     if (null !== currentFile) {
       const testFilePath = this.getTestFilePath(currentFile);
@@ -51,8 +49,9 @@ export default class GoToTest {
     if (strategy) {
       return strategy;
     }
-    // TODO TEST ME!
-    throw new Error('Given Strategy is incorrect');
+
+    this.ui.alertUserOfWrongStrategyOnConfiguration();
+    throw new Error('Given Strategy is incorrect.');
   }
 
   private getTestFilePath(srcFilePath: string): string {

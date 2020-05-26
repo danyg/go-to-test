@@ -26,6 +26,11 @@ export class ConfigurationDouble implements Configuration {
     return this;
   }
 
+  withInvalidStrategy() {
+    this._strategy = 88;
+    return this;
+  }
+
   withMatch(match: RegExp) {
     this._match = match;
     return this;
