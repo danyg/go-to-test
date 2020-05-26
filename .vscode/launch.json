@@ -25,7 +25,8 @@
         "${workspaceFolder}/test-fixtures"
       ],
       "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-      "preLaunchTask": "${defaultBuildTask}"
+      "preLaunchTask": "${defaultBuildTask}",
+      "internalConsoleOptions": "openOnSessionStart"
     },
     {
       "name": "Unit-Tests",
@@ -34,7 +35,8 @@
       "runtimeExecutable": "node",
       "args": ["out/test-helpers/run-unit-tests.js"],
       "preLaunchTask": "${defaultBuildTask}",
-      "console": "integratedTerminal"
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart"
     }
   ]
 }
