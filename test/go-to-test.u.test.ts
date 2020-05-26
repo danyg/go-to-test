@@ -1,12 +1,15 @@
 // import * as expect from 'expect';
 import { instance } from 'ts-mockito';
+import * as expect from 'expect';
+
+import GoToTest from '../src/go-to-test';
 import UserInterface from '../src/interfaces/user-interface';
+import { ExtensionContext } from '../src/interfaces/disposable';
+import Configuration, { StrategyOption } from '../src/interfaces/configuration';
+
 import UIMock from './mocks/ui-mock';
 import SystemDouble from './mocks/system-double';
-import GoToTest from '../src/go-to-test';
 import { ConfigurationDouble } from './mocks/configuration-double';
-import Configuration, { StrategyOption } from '../src/interfaces/configuration';
-import * as expect from 'expect';
 
 describe('GoToTest', () => {
   it('should do nothing WHEN command is triggered and there is no active editor', async () => {
@@ -147,6 +150,7 @@ class TestBuilder {
   private testFilePath!: string;
   private system!: SystemDouble;
   private ui!: UserInterface;
+  private context!: ExtensionContext;
 
   private constructor() {}
 
@@ -160,15 +164,27 @@ class TestBuilder {
     this.testSubject = new GoToTest(this.system, this.ui, configuration);
   }
 
+  private getContextDouble(): ExtensionContext {
+    return {
+      subscriptions: []
+    };
+  }
+
   // Given
   public anyConfiguration() {
     this.buildTestSubject();
+    this.context = this.getContextDouble();
+
+    this.testSubject.activate(this.context);
 
     return this;
   }
 
   public theFollowingConfiguration(configuration: Configuration) {
     this.buildTestSubject(configuration);
+    this.context = this.getContextDouble();
+
+    this.testSubject.activate(this.context);
 
     return this;
   }
@@ -186,7 +202,8 @@ class TestBuilder {
   // When
 
   public async goToTestIsActioned() {
-    await this.testSubject.executeCommand();
+    await this.system.__ExecuteCommand('danyg-go-to-test.goToTest');
+    // await this.testSubject.executeCommand();
   }
 
   // Then

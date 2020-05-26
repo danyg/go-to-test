@@ -29,7 +29,6 @@ export default class GoToTest {
   }
 
   public activate(context: ExtensionContext) {
-    this.ui.info('Go To Test ACTIVATED!');
     const disposable = this.registerTheCommand();
     context.subscriptions.push(disposable);
   }
@@ -39,7 +38,6 @@ export default class GoToTest {
   }
 
   public async executeCommand() {
-    console.log('Go To Test executed!');
     const currentFile = this.system.getActiveTextEditorFilePath();
     if (null !== currentFile) {
       const testFilePath = this.getTestFilePath(currentFile);

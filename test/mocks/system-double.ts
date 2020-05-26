@@ -29,12 +29,12 @@ class SystemDouble implements System {
     this.__OpenedFilePath = filePath;
   }
 
-  public __ExecuteCommand(command: string) {
+  public async __ExecuteCommand(command: string) {
     if (!(command in this.commands)) {
       throw new Error(`Command "${command}" Has not been. TEST FAILED!`);
     }
 
-    return this.commands[command]();
+    return await this.commands[command]();
   }
 
   public __On_getActiveTextEditorFilePath(answer: ActiveFilePath) {
