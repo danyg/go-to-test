@@ -1,19 +1,57 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import System, { Command } from '../../src/interfaces/system';
 import { Disposable } from '../../src/interfaces/disposable';
-import { mock } from 'ts-mockito';
+
+type ActiveFilePath = string | null;
+
+const NOT_SET_STRING = '___NOT___SETTED___';
 
 class SystemDouble implements System {
-  registerCommand(command: string, callback: Command, thisArg?: any): Disposable {
-    throw new Error('THIS SHOULD HAVE NOT BEEN EXECUTED, MISSING WHEN?');
+  private commands: Record<string, Command> = {};
+  private getActiveTextEditorFilePathResponse: ActiveFilePath = NOT_SET_STRING;
+  private __OpenedFilePath: string = NOT_SET_STRING;
+
+  public registerCommand(command: string, callback: Command, thisArg?: any): Disposable {
+    this.commands[command] = callback;
+    return { dispose: () => {} };
   }
-  getActiveTextEditorFilePath(): string | null {
-    throw new Error('THIS SHOULD HAVE NOT BEEN EXECUTED, MISSING WHEN?');
+
+  public getActiveTextEditorFilePath(): ActiveFilePath {
+    if (this.getActiveTextEditorFilePathResponse === NOT_SET_STRING) {
+      throw new Error(
+        'getActiveTextEditorFilePath answer has not been set, call __On_getActiveTextEditorFilePath before.'
+      );
+    }
+
+    return this.getActiveTextEditorFilePathResponse;
   }
-  openFileInEditor(filePath: string): Promise<any> {
-    throw new Error('THIS SHOULD HAVE NOT BEEN EXECUTED, MISSING WHEN?');
+
+  public async openFileInEditor(filePath: string): Promise<void> {
+    this.__OpenedFilePath = filePath;
+  }
+
+  public __ExecuteCommand(command: string) {
+    if (!(command in this.commands)) {
+      throw new Error(`Command "${command}" Has not been. TEST FAILED!`);
+    }
+
+    return this.commands[command]();
+  }
+
+  public __On_getActiveTextEditorFilePath(answer: ActiveFilePath) {
+    this.getActiveTextEditorFilePathResponse = answer;
+  }
+
+  public __IS_NOT_OpenedFilePath(): boolean {
+    return this.__OpenedFilePath === NOT_SET_STRING;
+  }
+
+  public __Get_OpenedFilePath(): string {
+    if (this.__IS_NOT_OpenedFilePath()) {
+      throw new Error('openFileInEditor was not called as expected. FAILED TEST!');
+    }
+
+    return this.__OpenedFilePath;
   }
 }
 
-export default mock(SystemDouble);
+export default SystemDouble;

@@ -1,9 +1,8 @@
 // import * as expect from 'expect';
-import { when, anyString, verify, instance, capture } from 'ts-mockito';
+import { instance } from 'ts-mockito';
 import UserInterface from '../src/interfaces/user-interface';
 import UIMock from './mocks/ui-mock';
-import SystemMock from './mocks/system-mock';
-import System from '../src/interfaces/system';
+import SystemDouble from './mocks/system-mock';
 import GoToTest from '../src/go-to-test';
 import { ConfigurationDouble } from './mocks/configuration-double';
 import Configuration, { StrategyOption } from '../src/interfaces/configuration';
@@ -132,12 +131,7 @@ const defaultConfiguration = ConfigurationDouble.getInstance().withStrategy(
   StrategyOption.MAVEN_LIKE
 );
 
-function buildTestSubject(configuration: Configuration = defaultConfiguration) {
-  const system: System = instance(SystemMock);
-  const ui: UserInterface = instance(UIMock);
-  const testSubject = new GoToTest(system, ui, configuration);
-  return testSubject;
-}
+// function
 
 class TestBuilder {
   public static build() {
@@ -151,6 +145,8 @@ class TestBuilder {
 
   private testSubject!: GoToTest;
   private testFilePath!: string;
+  private system!: SystemDouble;
+  private ui!: UserInterface;
 
   private constructor() {}
 
@@ -158,26 +154,32 @@ class TestBuilder {
     return this;
   }
 
+  private buildTestSubject(configuration: Configuration = defaultConfiguration) {
+    this.system = new SystemDouble();
+    this.ui = instance(UIMock);
+    this.testSubject = new GoToTest(this.system, this.ui, configuration);
+  }
+
   // Given
   public anyConfiguration() {
-    this.testSubject = buildTestSubject();
+    this.buildTestSubject();
 
     return this;
   }
 
   public theFollowingConfiguration(configuration: Configuration) {
-    this.testSubject = buildTestSubject(configuration);
+    this.buildTestSubject(configuration);
 
     return this;
   }
 
   public theUserOpens(sourceFilePath: string) {
-    when(SystemMock.getActiveTextEditorFilePath()).thenReturn(sourceFilePath);
+    this.system.__On_getActiveTextEditorFilePath(sourceFilePath);
     return this;
   }
 
   public theUserHaveNotOpenedAnyFileYet() {
-    when(SystemMock.getActiveTextEditorFilePath()).thenReturn(null);
+    this.system.__On_getActiveTextEditorFilePath(null);
     return this;
   }
 
@@ -196,11 +198,11 @@ class TestBuilder {
   }
 
   public isOpened() {
-    const [firstArg] = capture(SystemMock.openFileInEditor).last();
-    expect(firstArg).toEqual(this.testFilePath);
+    const openedFile = this.system.__Get_OpenedFilePath();
+    expect(openedFile).toEqual(this.testFilePath);
   }
 
   public nothingIsDone() {
-    verify(SystemMock.openFileInEditor(anyString())).never();
+    expect(this.system.__IS_NOT_OpenedFilePath());
   }
 }
