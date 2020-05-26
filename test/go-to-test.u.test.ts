@@ -6,132 +6,124 @@ import SystemMock from './mocks/system-mock';
 import System from '../src/interfaces/system';
 import GoToTest from '../src/go-to-test';
 import { ConfigurationDouble } from './mocks/configuration-double';
-import { StrategyOption } from '../src/interfaces/configuration';
+import Configuration, { StrategyOption } from '../src/interfaces/configuration';
 import * as expect from 'expect';
 
 describe('GoToTest', () => {
   it('should do nothing WHEN command is triggered and there is no active editor', async () => {
-    const testSubject = buildTestSubject();
-    when(SystemMock.getActiveTextEditorFilePath()).thenReturn(null);
+    const { given, when, then } = TestBuilder.build();
+    given.anyConfiguration();
 
-    await testSubject.executeCommand();
+    when.goToTestIsActioned();
 
-    verify(SystemMock.openFileInEditor(anyString())).never();
+    then.nothingIsDone();
   });
 
   describe('Maven Strategy', () => {
     it('should use maven strategy WHEN the configuration says so', async () => {
-      const testSubject = buildTestSubject(
-        ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN)
-      );
-      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
-        '/src/main/java/com/company/package/MyClass.java'
-      );
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN)
+        )
+        .and.theUserOpens('/src/main/java/com/company/package/MyClass.java');
 
-      await testSubject.executeCommand();
+      when.goToTestIsActioned();
 
-      const [firstArg] = capture(SystemMock.openFileInEditor).last();
-      expect(firstArg).toEqual('/src/test/java/com/company/package/MyClassTest.java');
+      then.theTestFile('/src/test/java/com/company/package/MyClassTest.java').isOpened();
     });
   });
 
   describe('Maven Like Strategy', () => {
     it('should use maven-like strategy WHEN the configuration says so', async () => {
-      const testSubject = buildTestSubject(
-        ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
-      );
-      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
-        '/src/module/sub-module/sub-sub-module/my-file.js'
-      );
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
+        )
+        .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
 
-      await testSubject.executeCommand();
+      when.goToTestIsActioned();
 
-      const [firstArg] = capture(SystemMock.openFileInEditor).last();
-      expect(firstArg).toEqual('/test/module/sub-module/sub-sub-module/my-file.test.js');
+      then.theTestFile('/test/module/sub-module/sub-sub-module/my-file.test.js').isOpened();
     });
 
     it('should use the nested `src` directory as projectPath', async () => {
-      const testSubject = buildTestSubject(
-        ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
-      );
-      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
-        '/src/module/src/sub-module/src/sub-sub-module/src/libs/my-file.js'
-      );
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
+        )
+        .and.theUserOpens('/src/module/src/sub-module/src/sub-sub-module/src/libs/my-file.js');
 
-      await testSubject.executeCommand();
+      when.goToTestIsActioned();
 
-      const [firstArg] = capture(SystemMock.openFileInEditor).last();
-      expect(firstArg).toEqual(
-        '/src/module/src/sub-module/src/sub-sub-module/test/libs/my-file.test.js'
-      );
+      then
+        .theTestFile('/src/module/src/sub-module/src/sub-sub-module/test/libs/my-file.test.js')
+        .isOpened();
     });
 
     it('should work with any extension', async () => {
-      const testSubject = buildTestSubject(
-        ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
-      );
-      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
-        '/src/libs/my-file.thisIsAVerboseExtension'
-      );
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
+        )
+        .and.theUserOpens('/src/libs/my-file.thisIsAVerboseExtension');
 
-      await testSubject.executeCommand();
+      when.goToTestIsActioned();
 
-      const [firstArg] = capture(SystemMock.openFileInEditor).last();
-      expect(firstArg).toEqual('/test/libs/my-file.test.thisIsAVerboseExtension');
+      then.theTestFile('/test/libs/my-file.test.thisIsAVerboseExtension').isOpened();
     });
   });
 
   describe('Same Directory Strategy', () => {
     it('should use same-directory strategy WHEN the configuration says so', async () => {
-      const testSubject = buildTestSubject(
-        ConfigurationDouble.getInstance().withStrategy(StrategyOption.SAME_DIRECTORY)
-      );
-      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
-        '/src/module/sub-module/sub-sub-module/my-file.js'
-      );
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.SAME_DIRECTORY)
+        )
+        .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
 
-      await testSubject.executeCommand();
+      when.goToTestIsActioned();
 
-      const [firstArg] = capture(SystemMock.openFileInEditor).last();
-      expect(firstArg).toEqual('/src/module/sub-module/sub-sub-module/my-file.test.js');
+      then.theTestFile('/src/module/sub-module/sub-sub-module/my-file.test.js').isOpened();
     });
   });
 
   describe('__TESTS__ Strategy', () => {
     it('should use __TESTS__ strategy WHEN the configuration says so', async () => {
-      const testSubject = buildTestSubject(
-        ConfigurationDouble.getInstance().withStrategy(StrategyOption.__TESTS__)
-      );
-      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
-        '/src/module/sub-module/sub-sub-module/my-file.js'
-      );
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.__TESTS__)
+        )
+        .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
 
-      await testSubject.executeCommand();
+      when.goToTestIsActioned();
 
-      const [firstArg] = capture(SystemMock.openFileInEditor).last();
-      expect(firstArg).toEqual('/src/module/sub-module/sub-sub-module/__tests__/my-file.js');
+      then.theTestFile('/src/module/sub-module/sub-sub-module/__tests__/my-file.js').isOpened();
     });
   });
 
   describe('Custom Strategy', () => {
     it('should use custom strategy WHEN the configuration says so', async () => {
-      const testSubject = buildTestSubject(
-        ConfigurationDouble.getInstance()
-          .withStrategy(StrategyOption.CUSTOM)
-          .withMatch(/(.*)\/([^\/]+)\.([\w]+)/)
-          .withReplace('_TESTS_$1/$2.IntegrationTest.$3')
-      );
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance()
+            .withStrategy(StrategyOption.CUSTOM)
+            .withMatch(/(.*)\/([^\/]+)\.([\w]+)/)
+            .withReplace('testGoesHere$1/$2.IntegrationTest.$3')
+        )
+        .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
 
-      when(SystemMock.getActiveTextEditorFilePath()).thenReturn(
-        '/src/module/sub-module/sub-sub-module/my-file.js'
-      );
+      when.goToTestIsActioned();
 
-      await testSubject.executeCommand();
-
-      const [firstArg] = capture(SystemMock.openFileInEditor).last();
-      expect(firstArg).toEqual(
-        '_TESTS_/src/module/sub-module/sub-sub-module/my-file.IntegrationTest.js'
-      );
+      then
+        .theTestFile('testGoesHere/src/module/sub-module/sub-sub-module/my-file.IntegrationTest.js')
+        .isOpened();
     });
   });
 });
@@ -140,9 +132,75 @@ const defaultConfiguration = ConfigurationDouble.getInstance().withStrategy(
   StrategyOption.MAVEN_LIKE
 );
 
-function buildTestSubject(configuration = defaultConfiguration) {
+function buildTestSubject(configuration: Configuration = defaultConfiguration) {
   const system: System = instance(SystemMock);
   const ui: UserInterface = instance(UIMock);
   const testSubject = new GoToTest(system, ui, configuration);
   return testSubject;
+}
+
+class TestBuilder {
+  public static build() {
+    const test = new TestBuilder();
+    return {
+      given: test,
+      when: test,
+      then: test
+    };
+  }
+
+  private testSubject!: GoToTest;
+  private testFilePath!: string;
+
+  private constructor() {}
+
+  get and() {
+    return this;
+  }
+
+  // Given
+  public anyConfiguration() {
+    this.testSubject = buildTestSubject();
+
+    return this;
+  }
+
+  public theFollowingConfiguration(configuration: Configuration) {
+    this.testSubject = buildTestSubject(configuration);
+
+    return this;
+  }
+
+  public theUserOpens(sourceFilePath: string) {
+    when(SystemMock.getActiveTextEditorFilePath()).thenReturn(sourceFilePath);
+    return this;
+  }
+
+  public theUserHaveNotOpenedAnyFileYet() {
+    when(SystemMock.getActiveTextEditorFilePath()).thenReturn(null);
+    return this;
+  }
+
+  // When
+
+  public async goToTestIsActioned() {
+    await this.testSubject.executeCommand();
+  }
+
+  // Then
+
+  public theTestFile(filePath: string) {
+    this.testFilePath = filePath;
+
+    return this;
+  }
+
+  public isOpened() {
+    const [firstArg] = capture(SystemMock.openFileInEditor).last();
+    expect(firstArg).toEqual(this.testFilePath);
+  }
+
+  public nothingIsDone() {
+    verify(SystemMock.openFileInEditor(anyString())).never();
+  }
 }
