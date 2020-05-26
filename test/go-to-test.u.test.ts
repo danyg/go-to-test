@@ -2,7 +2,7 @@
 import { instance } from 'ts-mockito';
 import UserInterface from '../src/interfaces/user-interface';
 import UIMock from './mocks/ui-mock';
-import SystemDouble from './mocks/system-mock';
+import SystemDouble from './mocks/system-double';
 import GoToTest from '../src/go-to-test';
 import { ConfigurationDouble } from './mocks/configuration-double';
 import Configuration, { StrategyOption } from '../src/interfaces/configuration';
