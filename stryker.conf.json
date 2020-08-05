@@ -13,5 +13,5 @@
   "testFramework": "mocha",
   "coverageAnalysis": "perTest",
   "tsconfigFile": "tsconfig.json",
-  "mutate": ["src/**/*.ts"]
+  "mutate": ["src/**/*.ts", "!src/**/*.d.ts"]
 }
