@@ -36,5 +36,5 @@ describe('Extension Test Suite', () => {
       .isExpected()
       .theActiveTextEditorFileName()
       .toMatch(endWith(pathOsAgnostic(tstFile)));
-  }).timeout(9999999999);
+  });
 });
