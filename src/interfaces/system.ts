@@ -6,5 +6,5 @@ export type Command = (...args: any[]) => any;
 export default interface System {
   registerCommand(command: string, callback: Command, thisArg?: any): Disposable;
   getActiveTextEditorFilePath(): string | null;
-  openFileInEditor(filePath: string): Promise<any>;
+  openFileInEditor(filePath: string): Promise<void>;
 }

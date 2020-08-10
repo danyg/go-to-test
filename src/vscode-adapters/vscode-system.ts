@@ -1,24 +1,36 @@
-import * as vscode from 'vscode';
 import System from '../interfaces/system';
+import {
+  VSCodeEditor,
+  RegisterCommandFn,
+  VSCodeURI,
+  VSCodeTextDocument,
+  VSCodeSystemIO
+} from './types';
 
 export default class VsCodeSystem implements System {
-  public static getInstance() {
-    return new VsCodeSystem();
+  public static getInstance(editor: VSCodeEditor, sysIo: VSCodeSystemIO) {
+    return new VsCodeSystem(editor, sysIo);
   }
 
-  public registerCommand = vscode.commands.registerCommand;
+  private constructor(private editor: VSCodeEditor, private sysIo: VSCodeSystemIO) {
+    this.registerCommand = sysIo.registerCommand;
+  }
+
+  public registerCommand: RegisterCommandFn;
 
   public getActiveTextEditorFilePath(): string | null {
-    if (!vscode.window.activeTextEditor) {
+    if (!this.editor.activeTextEditor) {
       return null;
     }
 
-    return vscode.window.activeTextEditor.document.fileName;
+    return this.editor.activeTextEditor.document.fileName;
   }
 
   public async openFileInEditor(filePath: string) {
-    const uri = vscode.Uri.file(filePath);
-    const doc: vscode.TextDocument = await vscode.workspace.openTextDocument(uri);
-    await vscode.window.showTextDocument(doc);
+    const uri: VSCodeURI = this.sysIo.stringToURI(filePath);
+    const p = this.editor.openTextDocument(uri);
+    console.log(p);
+    const doc: VSCodeTextDocument = await p;
+    await this.editor.showTextDocument(doc);
   }
 }

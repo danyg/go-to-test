@@ -1,4 +1,8 @@
 out
+reports
 node_modules
 .vscode-test/
 *.vsix
+
+# stryker temp files
+.stryker-tmp

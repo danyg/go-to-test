@@ -1,13 +1,13 @@
-import { ExtensionContext } from './interfaces/disposable';
-import System from './interfaces/system';
-import UserInterface from './interfaces/user-interface';
-import Configuration, { StrategyOption } from './interfaces/configuration';
-import Strategy from './interfaces/strategy';
-import MavenStrategy from './strategies/maven-strategy';
-import MavenLikeStrategy from './strategies/maven-like-strategy';
-import SameDirectoryStrategy from './strategies/same-directory-strategy';
-import UUTestsUUStrategy from './strategies/__tests__-strategy';
-import CustomStrategy from './strategies/custom-strategy';
+import { ExtensionContext } from '../interfaces/disposable';
+import System from '../interfaces/system';
+import UserInterface from '../interfaces/user-interface';
+import Configuration, { StrategyOption } from '../interfaces/configuration';
+import Strategy from '../interfaces/strategy';
+import MavenStrategy from '../strategies/maven-strategy';
+import MavenLikeStrategy from '../strategies/maven-like-strategy';
+import SameDirectoryStrategy from '../strategies/same-directory-strategy';
+import UUTestsUUStrategy from '../strategies/__tests__-strategy';
+import CustomStrategy from '../strategies/custom-strategy';
 
 export default class GoToTest {
   private strategies: Map<StrategyOption, Strategy>;
@@ -24,12 +24,9 @@ export default class GoToTest {
       [StrategyOption.__TESTS__, UUTestsUUStrategy.getInstance()],
       [StrategyOption.CUSTOM, CustomStrategy.getInstance(configuration)]
     ]);
-
-    console.log('Go To Test Loaded!');
   }
 
   public activate(context: ExtensionContext) {
-    this.ui.info('Go To Test ACTIVATED!');
     const disposable = this.registerTheCommand();
     context.subscriptions.push(disposable);
   }
@@ -38,8 +35,7 @@ export default class GoToTest {
     return this.system.registerCommand('danyg-go-to-test.goToTest', this.executeCommand.bind(this));
   }
 
-  public async executeCommand() {
-    console.log('Go To Test executed!');
+  private async executeCommand() {
     const currentFile = this.system.getActiveTextEditorFilePath();
     if (null !== currentFile) {
       const testFilePath = this.getTestFilePath(currentFile);
@@ -53,8 +49,9 @@ export default class GoToTest {
     if (strategy) {
       return strategy;
     }
-    // TODO TEST ME!
-    throw new Error('Given Strategy is incorrect');
+
+    this.ui.alertUserOfWrongStrategyOnConfiguration();
+    throw new Error('Given Strategy is incorrect.');
   }
 
   private getTestFilePath(srcFilePath: string): string {
