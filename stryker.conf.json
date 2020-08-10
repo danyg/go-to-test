@@ -11,7 +11,7 @@
 
   "transpilers": ["typescript"],
   "testFramework": "mocha",
-  "coverageAnalysis": "perTest",
+  "coverageAnalysis": "all",
   "tsconfigFile": "tsconfig.json",
   "mutate": ["src/**/*.ts", "!src/**/*.d.ts"]
 }

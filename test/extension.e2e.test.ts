@@ -24,7 +24,7 @@ describe('Extension Test Suite', () => {
       .toMatch(endWith(pathOsAgnostic(tstFile)));
   });
 
-  it('should go to a test file using maven like strategy', async () => {
+  it('should go to a test file using maven strategy', async () => {
     const srcFile = '/maven-strategy/src/main/java/com/company/package/MyClass.java';
     const tstFile = '/maven-strategy/src/test/java/com/company/package/MyClassTest.java';
     await given().vscode().isConfigured().withMavenStrategy();
@@ -36,5 +36,5 @@ describe('Extension Test Suite', () => {
       .isExpected()
       .theActiveTextEditorFileName()
       .toMatch(endWith(pathOsAgnostic(tstFile)));
-  });
+  }).timeout(9999999999);
 });

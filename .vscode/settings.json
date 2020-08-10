@@ -15,5 +15,9 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["maven", "gnomon"]
+  "cSpell.words": [
+		"gnomon",
+		"maven",
+		"transpilers"
+	]
 }
