@@ -7,9 +7,9 @@ import UserInterface from '../../src/interfaces/user-interface';
 import { ExtensionContext } from '../../src/interfaces/disposable';
 import Configuration, { StrategyOption } from '../../src/interfaces/configuration';
 
-import UIMock from '../mocks/ui-mock';
-import SystemDouble from '../mocks/system-double';
-import { ConfigurationDouble } from '../mocks/configuration-double';
+import UIMock from '../../test-helpers/mocks/ui-mock';
+import SystemDouble from '../../test-helpers/mocks/system-double';
+import { ConfigurationDouble } from '../../test-helpers/mocks/configuration-double';
 
 describe('GoToTest', () => {
   it('should do nothing WHEN command is triggered and there is no active editor', async () => {

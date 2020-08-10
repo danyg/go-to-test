@@ -17,7 +17,7 @@
   },
   "overrides": [
     {
-      "files": ["test/mocks/**/*.ts"],
+      "files": ["test-helpers/mocks/**/*.ts"],
       "rules": {
         "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/no-empty-function": "off",
