@@ -36,10 +36,14 @@ export default class GoToTest {
   }
 
   private async executeCommand() {
-    const currentFile = this.system.getActiveTextEditorFilePath();
-    if (null !== currentFile) {
-      const testFilePath = this.getTestFilePath(currentFile);
-      await this.system.openFileInEditor(testFilePath);
+    try {
+      const currentFile = this.system.getActiveTextEditorFilePath();
+      if (null !== currentFile) {
+        const testFilePath = this.getTestFilePath(currentFile);
+        await this.system.openFileInEditor(testFilePath);
+      }
+    } catch (e) {
+      this.ui.alertUserOfError(e);
     }
   }
 
@@ -50,8 +54,7 @@ export default class GoToTest {
       return strategy;
     }
 
-    this.ui.alertUserOfWrongStrategyOnConfiguration();
-    throw new Error('Given Strategy is incorrect.');
+    throw new Error('The given value on settings.json for "go-to-test.strategy" is INVALID.');
   }
 
   private getTestFilePath(srcFilePath: string): string {

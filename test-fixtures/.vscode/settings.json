@@ -1,3 +1,4 @@
 {
-	"goToTest.strategy": "maven"
+  "goToTest.strategy": "maven",
+  "goToTest.match": "^@(?<projectPath>.*)src(?<moduleInternalPath>.*)\\.(?<ext>[tj]sx?)$"
 }
