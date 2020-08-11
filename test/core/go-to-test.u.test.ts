@@ -35,6 +35,25 @@ describe('GoToTest', () => {
 
       then.theTestFile('/src/test/java/com/company/package/MyClassTest.java').isOpened();
     });
+
+    it('should use the nested `src` directory as projectPath', async () => {
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN)
+        )
+        .and.theUserOpens(
+          '/home/dev/src/main/theProject/src/main/java/com/company/package/MyClass.java'
+        );
+
+      await when.goToTestIsActioned();
+
+      then
+        .theTestFile(
+          '/home/dev/src/main/theProject/src/test/java/com/company/package/MyClassTest.java'
+        )
+        .isOpened();
+    });
   });
 
   describe('Maven Like Strategy', () => {
