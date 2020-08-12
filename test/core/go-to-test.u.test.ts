@@ -223,14 +223,36 @@ describe('GoToTest', () => {
           ConfigurationDouble.getInstance()
             .withStrategy(StrategyOption.CUSTOM)
             .withMatch(/(.*)\/([^\/]+)\.([\w]+)/)
-            .withReplace('testGoesHere$1/$2.IntegrationTest.$3')
+            .withReplace('$1/testGoesHere/$2.IntegrationTest.$3')
         )
         .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
 
       await when.goToTestIsActioned();
 
       then
-        .theTestFile('testGoesHere/src/module/sub-module/sub-sub-module/my-file.IntegrationTest.js')
+        .theTestFile(
+          '/src/module/sub-module/sub-sub-module/testGoesHere/my-file.IntegrationTest.js'
+        )
+        .isOpened();
+    });
+
+    it('should abstract the user to handle Windows Paths and focus in linux way', async () => {
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance()
+            .withStrategy(StrategyOption.CUSTOM)
+            .withMatch(/(.*)\/([^\/]+)\.([\w]+)/)
+            .withReplace('$1/testGoesHere/$2.IntegrationTest.$3')
+        )
+        .and.theUserOpens('C:\\Projects\\src\\module\\sub-module\\sub-sub-module\\my-file.js');
+
+      await when.goToTestIsActioned();
+
+      then
+        .theTestFile(
+          'C:\\Projects\\src\\module\\sub-module\\sub-sub-module\\testGoesHere\\my-file.IntegrationTest.js'
+        )
         .isOpened();
     });
 
