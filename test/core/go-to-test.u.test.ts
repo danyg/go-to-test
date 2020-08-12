@@ -122,6 +122,25 @@ describe('GoToTest', () => {
         .isOpened();
     });
 
+    it('should use the nested `src` directory as projectPath with Windows Paths', async () => {
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
+        )
+        .and.theUserOpens(
+          'C:\\Project\\src\\module\\src\\sub-module\\src\\sub-sub-module\\src\\libs\\my-file.js'
+        );
+
+      await when.goToTestIsActioned();
+
+      then
+        .theTestFile(
+          'C:\\Project\\src\\module\\src\\sub-module\\src\\sub-sub-module\\test\\libs\\my-file.test.js'
+        )
+        .isOpened();
+    });
+
     it('should work with any extension', async () => {
       const { given, when, then } = TestBuilder.build();
       given
@@ -149,6 +168,21 @@ describe('GoToTest', () => {
 
       then.theTestFile('/src/module/sub-module/sub-sub-module/my-file.test.js').isOpened();
     });
+
+    it('should use same-directory strategy WHEN the configuration says so and it works with Windows Paths', async () => {
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.SAME_DIRECTORY)
+        )
+        .and.theUserOpens('C:\\Project\\src\\module\\sub-module\\sub-sub-module\\my-file.js');
+
+      await when.goToTestIsActioned();
+
+      then
+        .theTestFile('C:\\Project\\src\\module\\sub-module\\sub-sub-module\\my-file.test.js')
+        .isOpened();
+    });
   });
 
   describe('__TESTS__ Strategy', () => {
@@ -163,6 +197,21 @@ describe('GoToTest', () => {
       await when.goToTestIsActioned();
 
       then.theTestFile('/src/module/sub-module/sub-sub-module/__tests__/my-file.js').isOpened();
+    });
+
+    it('should use __TESTS__ strategy WHEN the configuration says so and it works with Windows Paths', async () => {
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.__TESTS__)
+        )
+        .and.theUserOpens('C:\\Project\\src\\module\\sub-module\\sub-sub-module\\my-file.js');
+
+      await when.goToTestIsActioned();
+
+      then
+        .theTestFile('C:\\Project\\src\\module\\sub-module\\sub-sub-module\\__tests__\\my-file.js')
+        .isOpened();
     });
   });
 
