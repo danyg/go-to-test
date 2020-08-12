@@ -36,7 +36,7 @@ describe('GoToTest', () => {
       then.theTestFile('/src/test/java/com/company/package/MyClassTest.java').isOpened();
     });
 
-    it('should use the nested `src` directory as projectPath', async () => {
+    it('should use the nested `main` directory as projectPath', async () => {
       const { given, when, then } = TestBuilder.build();
       given
         .theFollowingConfiguration(
