@@ -72,6 +72,25 @@ describe('GoToTest', () => {
         )
         .isOpened();
     });
+
+    it('should use the nested `main` directory as package name in Windows Style', async () => {
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN)
+        )
+        .and.theUserOpens(
+          'C:\\Projects\\src\\main\\theProject\\src\\main\\java\\com\\company\\main\\package\\MyClass.java'
+        );
+
+      await when.goToTestIsActioned();
+
+      then
+        .theTestFile(
+          'C:\\Projects\\src\\main\\theProject\\src\\test\\java\\com\\company\\main\\package\\MyClassTest.java'
+        )
+        .isOpened();
+    });
   });
 
   describe('Maven Like Strategy', () => {

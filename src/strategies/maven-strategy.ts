@@ -7,8 +7,8 @@ export default class MavenStrategy implements Strategy {
 
   resolve(filePath: string): string {
     return filePath.replace(
-      /^(?<projectPath>.*)src\/main(?<moduleInternalPath>.*)\.(?<ext>[^\.]+)$/,
-      '$<projectPath>src/test$<moduleInternalPath>Test.$<ext>'
+      /^(?<projectPath>.*)src(?<dirSep>[\\\/])main(?<moduleInternalPath>.*)\.(?<ext>[^\.]+)$/,
+      '$<projectPath>src$<dirSep>test$<moduleInternalPath>Test.$<ext>'
     );
   }
 }
