@@ -1,4 +1,3 @@
-// import * as expect from 'expect';
 import { verify, instance, anyOfClass, capture, resetCalls } from 'ts-mockito';
 import * as expect from 'expect';
 
@@ -51,6 +50,25 @@ describe('GoToTest', () => {
       then
         .theTestFile(
           '/home/dev/src/main/theProject/src/test/java/com/company/package/MyClassTest.java'
+        )
+        .isOpened();
+    });
+
+    it('should use the nested `main` directory as package name', async () => {
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN)
+        )
+        .and.theUserOpens(
+          '/home/dev/src/main/theProject/src/main/java/com/company/main/package/MyClass.java'
+        );
+
+      await when.goToTestIsActioned();
+
+      then
+        .theTestFile(
+          '/home/dev/src/main/theProject/src/test/java/com/company/main/package/MyClassTest.java'
         )
         .isOpened();
     });
