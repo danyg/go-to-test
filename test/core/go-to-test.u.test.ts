@@ -168,13 +168,13 @@ describe('GoToTest', () => {
 
     it("should handle with an error WHEN the given regexp doesn't produce any match", async () => {
       const { given, when, then, util } = TestBuilder.build();
-      const regexpConfig = /@(.*)\/([^\/]+)\.([\w]+)/;
+      const badRegExpConfig = /@#~@~@@~@(.*)\/([^\/]+)\.([\w]+)/;
       const openedSourceCode = '/src/module/sub-module/sub-sub-module/my-file.js';
       given
         .theFollowingConfiguration(
           ConfigurationDouble.getInstance()
             .withStrategy(StrategyOption.CUSTOM)
-            .withMatch(regexpConfig)
+            .withMatch(badRegExpConfig)
             .withReplace('testGoesHere$1/$2.IntegrationTest.$3')
         )
         .and.theUserOpens(openedSourceCode);
@@ -184,13 +184,13 @@ describe('GoToTest', () => {
       then.userIsInformedAboutAnError();
       const error: StrategyResolveError = util.getAlertUserOfErrorLastArgument();
       expect(error.message).toEqual(
-        `Could not match RegExp: "${regexpConfig.toString()}" With file path: "${openedSourceCode}". Please ensure settings.json "go-to-test.match" is a valid RegExp and will match as expected.`
+        `Could not match RegExp: "${badRegExpConfig.toString()}" With file path: "${openedSourceCode}". Please ensure settings.json "go-to-test.match" is a valid RegExp and will match as expected.`
       );
     });
   });
 
   describe('Invalid strategy', () => {
-    it('should use __TESTS__ strategy WHEN the configuration says so', async () => {
+    it('should alert the user of an error when there is an invalid strategy set in the settings.json', async () => {
       const { given, when, then, util } = TestBuilder.build();
       given
         .theFollowingConfiguration(ConfigurationDouble.getInstance().withInvalidStrategy())
