@@ -7,8 +7,8 @@ export default class UUTestsUUStrategy implements Strategy {
 
   resolve(filePath: string): string {
     return filePath.replace(
-      /^(?<containerPath>.*)\/(?<fileName>[^\/]+)\.(?<ext>[^\.]+)$/,
-      '$<containerPath>/__tests__/$<fileName>.$<ext>'
+      /^(?<containerPath>.*)(?<dirSep>[\\\/])(?<fileName>[^\/]+)\.(?<ext>[^\.]+)$/,
+      '$<containerPath>$<dirSep>__tests__$<dirSep>$<fileName>.$<ext>'
     );
   }
 }

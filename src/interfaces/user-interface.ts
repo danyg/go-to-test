@@ -1,4 +1,4 @@
 export default interface UserInterface {
   info(message: string): void;
-  alertUserOfWrongStrategyOnConfiguration(): Promise<void>;
+  alertUserOfError(error: Error): Promise<void>;
 }

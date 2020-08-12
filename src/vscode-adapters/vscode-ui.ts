@@ -2,6 +2,7 @@ import UserInterface from '../interfaces/user-interface';
 import { VSCodeWindow } from './types';
 
 export default class VSCodeUI implements UserInterface {
+  private static PREFIX = 'Go To Test Extension: ';
   public static getInstance(vscodeWindow: VSCodeWindow) {
     return new VSCodeUI(vscodeWindow);
   }
@@ -10,12 +11,11 @@ export default class VSCodeUI implements UserInterface {
 
   info(message: string): void {
     console.log(`[INFO]: ${message}`);
-    this.vscodeWindow.showInformationMessage(message);
+    this.vscodeWindow.showInformationMessage(`${VSCodeUI.PREFIX}${message}`);
   }
 
-  public async alertUserOfWrongStrategyOnConfiguration() {
-    this.vscodeWindow.showErrorMessage(
-      'Go To Test Extension: The given value on go-to-test.strategy is not valid.'
-    );
+  public async alertUserOfError(error: Error): Promise<void> {
+    console.log(`[ERROR]: ${error.message}`);
+    await this.vscodeWindow.showErrorMessage(`${VSCodeUI.PREFIX}${error.message}`);
   }
 }
