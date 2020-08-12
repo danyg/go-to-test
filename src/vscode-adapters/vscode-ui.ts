@@ -1,6 +1,5 @@
 import UserInterface from '../interfaces/user-interface';
 import { VSCodeWindow } from './types';
-import { StrategyResolveError } from '../exceptions/strategy-resolve-error';
 
 export default class VSCodeUI implements UserInterface {
   private static PREFIX = 'Go To Test Extension: ';
@@ -15,7 +14,7 @@ export default class VSCodeUI implements UserInterface {
     this.vscodeWindow.showInformationMessage(`${VSCodeUI.PREFIX}${message}`);
   }
 
-  public async alertUserOfError(error: StrategyResolveError): Promise<void> {
+  public async alertUserOfError(error: Error): Promise<void> {
     console.log(`[ERROR]: ${error.message}`);
     await this.vscodeWindow.showErrorMessage(`${VSCodeUI.PREFIX}${error.message}`);
   }
