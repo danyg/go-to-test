@@ -1,5 +1,5 @@
 import Configuration, { StrategyOption } from '../interfaces/configuration';
-import * as vscode from 'vscode';
+import { GetConfigurationFn, GoToTestVsCodeNS } from './types';
 
 const SECTIONS = {
   STRATEGY: 'goToTest.strategy',
@@ -16,33 +16,29 @@ const strategyConfigToStrategyOption = new Map<string, StrategyOption>([
 ]);
 
 export default class VSCodeConfiguration implements Configuration {
-  public static getInstance() {
-    return new VSCodeConfiguration();
+  public static getInstance(vscode: GoToTestVsCodeNS) {
+    return new VSCodeConfiguration(vscode.workspace.getConfiguration);
   }
   public static SECTIONS = SECTIONS;
 
+  private constructor(private getConfiguration: GetConfigurationFn) {}
+
   public get strategy(): StrategyOption {
-    const defaultValue = StrategyOption.MAVEN_LIKE;
-    if (this.config().has(SECTIONS.STRATEGY)) {
-      const strategyConfig: string = this.config().get(SECTIONS.STRATEGY) ?? '';
-      return strategyConfigToStrategyOption.get(strategyConfig) ?? defaultValue;
-    }
-    return defaultValue;
+    const defaultValue = StrategyOption.UNKNOWN;
+
+    const strategyConfig = this.getConfiguration().get(SECTIONS.STRATEGY) as string;
+    return strategyConfigToStrategyOption.get(strategyConfig) ?? defaultValue;
   }
 
   public get match(): RegExp {
-    const defaultValue = /^(?<projectPath>.*)src(?<moduleInternalPath>.*)\\.(?<ext>[tj]sx?)$/;
-    if (!this.config().has(SECTIONS.MATCH)) {
+    const defaultValue = /^(?<projectPath>.*)src(?<moduleInternalPath>.*)\.(?<ext>[tj]sx?)$/;
+    if (!this.getConfiguration().get(SECTIONS.MATCH)) {
       return defaultValue;
     }
-    return new RegExp(this.config().get('goToTest.match') ?? '');
+    return new RegExp(this.getConfiguration().get(SECTIONS.MATCH) as string);
   }
 
   public get replace(): string {
-    return this.config().get('goToTest.replace') ?? '';
-  }
-
-  private config(): vscode.WorkspaceConfiguration {
-    return vscode.workspace.getConfiguration();
+    return this.getConfiguration().get(SECTIONS.REPLACE) ?? '$1test$2.spec.$3';
   }
 }
