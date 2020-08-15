@@ -1,10 +1,10 @@
 import UserInterface from '../interfaces/user-interface';
-import { VSCodeWindow } from './types';
+import { VSCodeWindow, GoToTestVsCodeNS } from './types';
 
 export default class VSCodeUI implements UserInterface {
   private static PREFIX = 'Go To Test Extension: ';
-  public static getInstance(vscodeWindow: VSCodeWindow) {
-    return new VSCodeUI(vscodeWindow);
+  public static getInstance(vscode: GoToTestVsCodeNS) {
+    return new VSCodeUI(vscode.window);
   }
 
   private constructor(private vscodeWindow: VSCodeWindow) {}

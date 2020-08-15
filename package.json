@@ -102,6 +102,7 @@
     "prettier": "^2.0.5",
     "ts-mockito": "^2.6.1",
     "typescript": "^3.8.3",
-    "vscode-test": "^1.4.0"
+    "vscode-test": "^1.4.0",
+    "vscode-uri": "^2.1.2"
   }
 }

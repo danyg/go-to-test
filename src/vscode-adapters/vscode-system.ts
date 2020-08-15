@@ -1,36 +1,29 @@
 import System from '../interfaces/system';
-import {
-  VSCodeEditor,
-  RegisterCommandFn,
-  VSCodeURI,
-  VSCodeTextDocument,
-  VSCodeSystemIO
-} from './types';
+import { RegisterCommandFn, VSCodeTextDocument, GoToTestVsCodeNS } from './types';
+import { URI } from 'vscode-uri';
 
 export default class VsCodeSystem implements System {
-  public static getInstance(editor: VSCodeEditor, sysIo: VSCodeSystemIO) {
-    return new VsCodeSystem(editor, sysIo);
+  public static getInstance(vscode: GoToTestVsCodeNS) {
+    return new VsCodeSystem(vscode);
   }
 
-  private constructor(private editor: VSCodeEditor, private sysIo: VSCodeSystemIO) {
-    this.registerCommand = sysIo.registerCommand;
+  private constructor(private vscode: GoToTestVsCodeNS) {
+    this.registerCommand = this.vscode.commands.registerCommand;
   }
 
   public registerCommand: RegisterCommandFn;
 
   public getActiveTextEditorFilePath(): string | null {
-    if (!this.editor.activeTextEditor) {
+    if (!this.vscode.window.activeTextEditor) {
       return null;
     }
 
-    return this.editor.activeTextEditor.document.fileName;
+    return this.vscode.window.activeTextEditor.document.fileName;
   }
 
   public async openFileInEditor(filePath: string) {
-    const uri: VSCodeURI = this.sysIo.stringToURI(filePath);
-    const p = this.editor.openTextDocument(uri);
-    console.log(p);
-    const doc: VSCodeTextDocument = await p;
-    await this.editor.showTextDocument(doc);
+    const uri: URI = this.vscode.Uri.file(filePath);
+    const doc: VSCodeTextDocument = await this.vscode.workspace.openTextDocument(uri);
+    await this.vscode.window.showTextDocument(doc);
   }
 }
