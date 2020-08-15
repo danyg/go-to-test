@@ -25,7 +25,7 @@ async function main() {
       launchArgs: [testWorkspace]
     });
   } catch (err) {
-    console.error('Failed to run tests');
+    console.error('Failed to run tests\n', err);
     process.exit(1);
   }
 }

@@ -56,17 +56,22 @@
     }
   },
   "scripts": {
+    "ci:start": "Xvfb :99 -screen 0 1920x1080x24 & echo $! > ./xvfb.pid",
+    "ci:stop": "kill $(cat ./xvfb.pid)",
     "vscode:prepublish": "npm run compile",
     "clean": "rm -rf ./out",
     "compile": "npm run clean && tsc -p ./",
     "lint": "eslint ./ --ext ts",
     "watch": "tsc -watch -p ./",
     "test": "npm run test:all -d",
+    "test:ci": "npm run test:all:ci -d",
     "test:all": "npm run test:pretest && npm run test:tests && npm run test:pit",
+    "test:all:ci": "npm run test:pretest && npm run test:unit && npm run test:e2e:ci && npm run test:pit",
     "test:pretest": "npm run compile && npm run lint",
     "test:tests": "npm run test:unit && npm run test:e2e",
     "test:unit": "node out/test-helpers/run-unit-tests.js",
     "test:e2e": "node ./out/test-helpers/run-e2e-tests.js",
+    "test:e2e:ci": "DISPLAY=:99.0 node ./out/test-helpers/run-e2e-tests.js",
     "test:pit": "npx stryker run"
   },
   "husky": {

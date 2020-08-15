@@ -3,6 +3,7 @@ reports
 node_modules
 .vscode-test/
 *.vsix
+xvfb.pid
 
 # stryker temp files
 .stryker-tmp
