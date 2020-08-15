@@ -5,10 +5,6 @@ class UIDouble implements UserInterface {
   alertUserOfError(error: Error): Promise<void> {
     throw new Error('Method not implemented.');
   }
-
-  info(message: string): void {
-    throw new Error('Method not implemented.');
-  }
 }
 
 export default mock(UIDouble);

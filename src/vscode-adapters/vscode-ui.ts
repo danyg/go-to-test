@@ -9,13 +9,7 @@ export default class VSCodeUI implements UserInterface {
 
   private constructor(private vscodeWindow: VSCodeWindow) {}
 
-  info(message: string): void {
-    console.log(`[INFO]: ${message}`);
-    this.vscodeWindow.showInformationMessage(`${VSCodeUI.PREFIX}${message}`);
-  }
-
   public async alertUserOfError(error: Error): Promise<void> {
-    console.log(`[ERROR]: ${error.message}`);
     await this.vscodeWindow.showErrorMessage(`${VSCodeUI.PREFIX}${error.message}`);
   }
 }

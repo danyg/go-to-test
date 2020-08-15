@@ -24,23 +24,21 @@ export default class VSCodeConfiguration implements Configuration {
   private constructor(private getConfiguration: GetConfigurationFn) {}
 
   public get strategy(): StrategyOption {
-    const defaultValue = StrategyOption.MAVEN_LIKE;
-    if (this.getConfiguration().has(SECTIONS.STRATEGY)) {
-      const strategyConfig: string = this.getConfiguration().get(SECTIONS.STRATEGY) ?? '';
-      return strategyConfigToStrategyOption.get(strategyConfig) ?? defaultValue;
-    }
-    return defaultValue;
+    const defaultValue = StrategyOption.UNKNOWN;
+
+    const strategyConfig = this.getConfiguration().get(SECTIONS.STRATEGY) as string;
+    return strategyConfigToStrategyOption.get(strategyConfig) ?? defaultValue;
   }
 
   public get match(): RegExp {
-    const defaultValue = /^(?<projectPath>.*)src(?<moduleInternalPath>.*)\\.(?<ext>[tj]sx?)$/;
-    if (!this.getConfiguration().has(SECTIONS.MATCH)) {
+    const defaultValue = /^(?<projectPath>.*)src(?<moduleInternalPath>.*)\.(?<ext>[tj]sx?)$/;
+    if (!this.getConfiguration().get(SECTIONS.MATCH)) {
       return defaultValue;
     }
-    return new RegExp(this.getConfiguration().get('goToTest.match') ?? '');
+    return new RegExp(this.getConfiguration().get(SECTIONS.MATCH) as string);
   }
 
   public get replace(): string {
-    return this.getConfiguration().get('goToTest.replace') ?? '';
+    return this.getConfiguration().get(SECTIONS.REPLACE) ?? '$1test$2.spec.$3';
   }
 }

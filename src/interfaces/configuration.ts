@@ -3,7 +3,8 @@ export enum StrategyOption {
   MAVEN_LIKE,
   SAME_DIRECTORY,
   __TESTS__,
-  CUSTOM
+  CUSTOM,
+  UNKNOWN
 }
 
 export default interface Configuration {

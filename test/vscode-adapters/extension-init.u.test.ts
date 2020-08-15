@@ -28,15 +28,18 @@ describe('buildExtension', () => {
     strategy,
     actualPath,
     expectedTestPath,
-    extraConfig = []
+    extraConfig = [],
+    extraTitle = ''
   }: {
     strategy: string;
     actualPath: string;
     expectedTestPath: string;
     extraConfig?: Array<[string, string]>;
+    extraTitle?: string;
   }) {
-    it(`[happy path] [Strategy: ${strategy}] should go to test from a source file`, async () => {
+    it(`should go to test from a source file [happy path] [Strategy: ${strategy}] ${extraTitle}`, async () => {
       vscodeNSHandler
+        .withThrowOnShowErrorMessage()
         // Active Editor
         .withActiveEditor(actualPath)
         // Config
@@ -81,6 +84,62 @@ describe('buildExtension', () => {
     extraConfig: [
       ['goToTest.match', '/(.*)src(.*)/'],
       ['goToTest.replace', '/$1theTests$2/']
-    ]
+    ],
+    extraTitle: '[with config] '
+  });
+  testStrategy({
+    strategy: 'custom',
+    actualPath: '/home/project/src/core/module/main.js',
+    expectedTestPath: 'file:///home/project/test/core/module/main.spec.js'
+  });
+
+  it(`should advice the user of an error in the configuration When wrong strategy [sad path]`, async () => {
+    vscodeNSHandler
+      .withThrowOnShowErrorMessage()
+      // Active Editor
+      .withActiveEditor('/home/project/src/core/module/main.js')
+      // Config
+      .withConfig(
+        new Map<string, string>([['goToTest.strategy', 'wrong-strategy']])
+      );
+    let error;
+
+    const extension = buildExtension(vscodeNSMock);
+    extension.activate(instance(extensionContextMock));
+
+    try {
+      await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeDefined();
+    expect(error.message).toEqual(
+      'vscode.window.showErrorMessage: Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
+    );
+  });
+
+  it(`should advice the user of an error in the configuration When missing strategy config [sad path]`, async () => {
+    vscodeNSHandler
+      .withThrowOnShowErrorMessage()
+      // Active Editor
+      .withActiveEditor('/home/project/src/core/module/main.js')
+      // Config
+      .withConfig(new Map<string, string>([]));
+    let error;
+
+    const extension = buildExtension(vscodeNSMock);
+    extension.activate(instance(extensionContextMock));
+
+    try {
+      await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeDefined();
+    expect(error.message).toEqual(
+      'vscode.window.showErrorMessage: Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
+    );
   });
 });

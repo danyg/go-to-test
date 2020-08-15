@@ -43,7 +43,7 @@ export default class GoToTest {
         await this.system.openFileInEditor(testFilePath);
       }
     } catch (e) {
-      this.ui.alertUserOfError(e);
+      return this.ui.alertUserOfError(e);
     }
   }
 

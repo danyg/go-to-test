@@ -6,7 +6,8 @@ import {
   ActiveTextEditor,
   VSCodeTextEditor,
   VSCodeTextDocument,
-  VSCodeWorkspaceConfiguration
+  VSCodeWorkspaceConfiguration,
+  ShowErrorMessageFn
 } from '../../src/vscode-adapters/types';
 import { mock, instance, when, anyOfClass, anything, capture } from 'ts-mockito';
 import { URI } from 'vscode-uri';
@@ -67,19 +68,14 @@ export class VSCodeNSHandler {
     this.newTextDocumentMock = mock<VSCodeTextDocument>();
     this.activeTextDocumentMock = mock<VSCodeTextDocument>();
 
-    const commands = instance(this.vsCodeCommandsMock);
-    this.monkeyPatchingCommandsRegisterCommand(commands);
-
-    const window = instance(this.vsCodeWindowMock);
-    this.monkeyPatchingWindowShowErrorToThrow(window);
-
     this.vscodeNSMock = {
-      window,
+      window: instance(this.vsCodeWindowMock),
       workspace: instance(this.vsCodeWorkspaceMock),
       Uri: URI,
-      commands
+      commands: instance(this.vsCodeCommandsMock)
     };
 
+    this.monkeyPatchingCommandsRegisterCommand();
     this.mockOpenTextDocument();
   }
 
@@ -117,6 +113,12 @@ export class VSCodeNSHandler {
     return capture(this.vsCodeWorkspaceMock.openTextDocument);
   }
 
+  public withThrowOnShowErrorMessage() {
+    this.monkeyPatchingWindowShowErrorToThrow();
+
+    return this;
+  }
+
   public async triggerVSCodeCommand(cmdStr: string) {
     if (cmdStr in this.commands) {
       return Promise.resolve(this.commands[cmdStr]());
@@ -125,16 +127,22 @@ export class VSCodeNSHandler {
     }
   }
 
-  private monkeyPatchingCommandsRegisterCommand(commandsInstance: VSCodeCommands) {
+  private monkeyPatchingCommandsRegisterCommand() {
     const disposableMock = mock<Disposable>();
-    commandsInstance.registerCommand = (command: string, callback: Callback, thisArg?: any) => {
+    this.vscodeNSMock.commands.registerCommand = (
+      command: string,
+      callback: Callback,
+      thisArg?: any
+    ) => {
       this.commands[command] = callback;
       return instance(disposableMock);
     };
   }
 
-  private monkeyPatchingWindowShowErrorToThrow(window: VSCodeWindow) {
-    window.showErrorMessage = (message: string) => {
+  private originalShowErrorMessage!: ShowErrorMessageFn;
+  private monkeyPatchingWindowShowErrorToThrow() {
+    this.originalShowErrorMessage = this.vscodeNSMock.window.showErrorMessage;
+    this.vscodeNSMock.window.showErrorMessage = (message: string) => {
       throw new Error(`vscode.window.showErrorMessage: ${message}`);
     };
   }
