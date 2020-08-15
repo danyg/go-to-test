@@ -5,7 +5,9 @@ import VSCodeUI from './vscode-ui';
 import VSCodeConfiguration from './vscode-configuration';
 import { GoToTestVsCodeNS } from './types';
 
-export function extensionInit(vscode: GoToTestVsCodeNS): (context: ExtensionContext) => void {
+export function extensionInit(
+  vscode: GoToTestVsCodeNS
+): { activate: (context: ExtensionContext) => void } {
   const goToTestExtension = new GoToTest(
     VsCodeSystem.getInstance(
       {
@@ -24,5 +26,7 @@ export function extensionInit(vscode: GoToTestVsCodeNS): (context: ExtensionCont
     VSCodeConfiguration.getInstance()
   );
 
-  return goToTestExtension.activate.bind(goToTestExtension);
+  return {
+    activate: goToTestExtension.activate.bind(goToTestExtension)
+  };
 }
