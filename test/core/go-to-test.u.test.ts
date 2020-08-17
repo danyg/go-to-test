@@ -28,11 +28,11 @@ describe('GoToTest', () => {
         .theFollowingConfiguration(
           ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN)
         )
-        .and.theUserOpens('/src/main/java/com/company/package/MyClass.java');
+        .and.theUserOpens('/src/main/java/com/company/package1/MyClass.java');
 
       await when.goToTestIsActioned();
 
-      then.theTestFile('/src/test/java/com/company/package/MyClassTest.java').isOpened();
+      then.theTestFile('/src/test/java/com/company/package1/MyClassTest.java').isOpened();
     });
 
     it('should use the nested `main` directory as projectPath', async () => {
@@ -42,14 +42,14 @@ describe('GoToTest', () => {
           ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN)
         )
         .and.theUserOpens(
-          '/home/dev/src/main/theProject/src/main/java/com/company/package/MyClass.java'
+          '/home/dev/src/main/theProject/src/main/java/com/company/package1/MyClass.java'
         );
 
       await when.goToTestIsActioned();
 
       then
         .theTestFile(
-          '/home/dev/src/main/theProject/src/test/java/com/company/package/MyClassTest.java'
+          '/home/dev/src/main/theProject/src/test/java/com/company/package1/MyClassTest.java'
         )
         .isOpened();
     });

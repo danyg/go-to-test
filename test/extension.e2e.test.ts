@@ -25,8 +25,8 @@ describe('Extension Test Suite', () => {
   });
 
   it('should go to a test file using maven strategy', async () => {
-    const srcFile = '/maven-strategy/src/main/java/com/company/package/MyClass.java';
-    const tstFile = '/maven-strategy/src/test/java/com/company/package/MyClassTest.java';
+    const srcFile = '/maven-strategy/src/main/java/com/company/package1/MyClass.java';
+    const tstFile = '/maven-strategy/src/test/java/com/company/package1/MyClassTest.java';
     await given().vscode().isConfigured().withMavenStrategy();
     await given().user().had().openAFile(srcFile);
 
