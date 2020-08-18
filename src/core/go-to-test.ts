@@ -35,7 +35,7 @@ export default class GoToTest {
     return this.system.registerCommand('danyg-go-to-test.goToTest', this.executeCommand.bind(this));
   }
 
-  private async executeCommand() {
+  private async executeCommand(): Promise<void> {
     try {
       const currentFile = this.system.getActiveTextEditorFilePath();
       if (null !== currentFile) {
@@ -43,7 +43,7 @@ export default class GoToTest {
         await this.system.openFileInEditor(testFilePath);
       }
     } catch (e) {
-      return this.ui.alertUserOfError(e);
+      this.ui.alertUserOfError(e);
     }
   }
 

@@ -17,10 +17,11 @@ export default class User {
   }
 
   public async goesToTest() {
-    return vscode.commands.executeCommand('danyg-go-to-test.goToTest');
+    const a = vscode.commands.executeCommand('danyg-go-to-test.goToTest');
+    return a;
   }
 
-  public had(): User {
+  public has(): User {
     return this;
   }
 
