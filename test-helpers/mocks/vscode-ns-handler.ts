@@ -109,14 +109,19 @@ export class VSCodeNSHandler {
     return this;
   }
 
+  public withShowErrorMessageNeverResolved() {
+    // @ts-ignore
+    when(this.vsCodeWindowMock.showErrorMessage(anything())).thenReturn(new Promise(() => {}));
+
+    return this;
+  }
+
   public captureOpenTextDocument() {
     return capture(this.vsCodeWorkspaceMock.openTextDocument);
   }
 
-  public withThrowOnShowErrorMessage() {
-    this.monkeyPatchingWindowShowErrorToThrow();
-
-    return this;
+  public captureShowErrorMessage() {
+    return capture(this.vsCodeWindowMock.showErrorMessage);
   }
 
   public async triggerVSCodeCommand(cmdStr: string) {
@@ -136,14 +141,6 @@ export class VSCodeNSHandler {
     ) => {
       this.commands[command] = callback;
       return instance(disposableMock);
-    };
-  }
-
-  private originalShowErrorMessage!: ShowErrorMessageFn;
-  private monkeyPatchingWindowShowErrorToThrow() {
-    this.originalShowErrorMessage = this.vscodeNSMock.window.showErrorMessage;
-    this.vscodeNSMock.window.showErrorMessage = (message: string) => {
-      throw new Error(`vscode.window.showErrorMessage: ${message}`);
     };
   }
 }
