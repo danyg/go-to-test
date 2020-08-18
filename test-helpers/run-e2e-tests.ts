@@ -1,13 +1,12 @@
 import * as path from 'path';
 
 import { runTests } from 'vscode-test';
-import { testHelpersPath, projectPath } from './test-paths';
+import { testHelpersPath, projectPath, testWorkspace } from './test-paths';
 
 async function main() {
   try {
     const extensionDevelopmentPath = projectPath;
     const suiteExecutorPath = path.resolve(testHelpersPath, './suite/index');
-    const testWorkspace = path.resolve(projectPath, './test-fixtures');
 
     console.log(
       '\u001b[1;36m',

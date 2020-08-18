@@ -1,6 +1,7 @@
 import * as expect from 'expect';
 import * as vscode from 'vscode';
 import { Matchers } from 'expect/build/types';
+import FileSystemForTests from './actors/file-system-for-tests';
 
 class Then {
   private expectAccessor = { expect };
@@ -20,6 +21,11 @@ class Then {
     }
     throw new Error('no activeTextEditor');
   };
+
+  async theFileSystem() {
+    const listOfFiles: string[] = await FileSystemForTests.getInstance().getListOfFS();
+    return expect(listOfFiles);
+  }
 }
 
 export const then = () => new Then();
