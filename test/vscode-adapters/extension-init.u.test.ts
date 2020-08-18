@@ -39,7 +39,6 @@ describe('buildExtension', () => {
   }) {
     it(`should go to test from a source file [happy path] [Strategy: ${strategy}] ${extraTitle}`, async () => {
       vscodeNSHandler
-        .withThrowOnShowErrorMessage()
         // Active Editor
         .withActiveEditor(actualPath)
         // Config
@@ -95,51 +94,43 @@ describe('buildExtension', () => {
 
   it(`should advice the user of an error in the configuration When wrong strategy [sad path]`, async () => {
     vscodeNSHandler
-      .withThrowOnShowErrorMessage()
+      .withShowErrorMessageNeverResolved()
       // Active Editor
       .withActiveEditor('/home/project/src/core/module/main.js')
       // Config
       .withConfig(
         new Map<string, string>([['goToTest.strategy', 'wrong-strategy']])
       );
-    let error;
 
     const extension = buildExtension(vscodeNSMock);
     extension.activate(instance(extensionContextMock));
 
-    try {
-      await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
-    } catch (e) {
-      error = e;
-    }
+    await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
 
-    expect(error).toBeDefined();
-    expect(error.message).toEqual(
-      'vscode.window.showErrorMessage: Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
+    const [message] = vscodeNSHandler.captureShowErrorMessage().last();
+    expect(message).toBeDefined();
+    expect(message).toEqual(
+      'Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
     );
   });
 
   it(`should advice the user of an error in the configuration When missing strategy config [sad path]`, async () => {
     vscodeNSHandler
-      .withThrowOnShowErrorMessage()
+      .withShowErrorMessageNeverResolved()
       // Active Editor
       .withActiveEditor('/home/project/src/core/module/main.js')
       // Config
       .withConfig(new Map<string, string>([]));
-    let error;
 
     const extension = buildExtension(vscodeNSMock);
     extension.activate(instance(extensionContextMock));
 
-    try {
-      await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
-    } catch (e) {
-      error = e;
-    }
+    await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
 
-    expect(error).toBeDefined();
-    expect(error.message).toEqual(
-      'vscode.window.showErrorMessage: Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
+    const [message] = vscodeNSHandler.captureShowErrorMessage().last();
+    expect(message).toBeDefined();
+    expect(message).toEqual(
+      'Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
     );
   });
 });
