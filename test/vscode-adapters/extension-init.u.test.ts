@@ -46,13 +46,10 @@ describe('buildExtension', () => {
           new Map<string, string>([['goToTest.strategy', strategy], ...extraConfig])
         );
 
-      const extension = buildExtension(vscodeNSMock);
-      extension.activate(instance(extensionContextMock));
+      When.extensionIsBuilt();
       await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
 
-      const openTextDocArgs = vscodeNSHandler.captureOpenTextDocument().last();
-      const uriUsed: URI = openTextDocArgs[0] as URI;
-      expect(uriUsed.toString()).toBe(expectedTestPath);
+      Then.openedDocumentPathIs(expectedTestPath);
     });
   }
 
@@ -102,14 +99,10 @@ describe('buildExtension', () => {
         new Map<string, string>([['goToTest.strategy', 'wrong-strategy']])
       );
 
-    const extension = buildExtension(vscodeNSMock);
-    extension.activate(instance(extensionContextMock));
-
+    When.extensionIsBuilt();
     await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
 
-    const [message] = vscodeNSHandler.captureShowErrorMessage().last();
-    expect(message).toBeDefined();
-    expect(message).toEqual(
+    Then.showedErrorMessageIs(
       'Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
     );
   });
@@ -122,15 +115,56 @@ describe('buildExtension', () => {
       // Config
       .withConfig(new Map<string, string>([]));
 
-    const extension = buildExtension(vscodeNSMock);
-    extension.activate(instance(extensionContextMock));
-
+    When.extensionIsBuilt();
     await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
 
-    const [message] = vscodeNSHandler.captureShowErrorMessage().last();
-    expect(message).toBeDefined();
-    expect(message).toEqual(
+    Then.showedErrorMessageIs(
       'Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
     );
   });
+
+  it(`should create the test file when it does not exists [happy path]`, async () => {
+    const expectedTestPath = 'file:///home/project/test/core/module/main.test.js';
+    vscodeNSHandler
+      // Active Editor
+      .withActiveEditor('/home/project/src/core/module/main.js')
+      .withNotExistantFilePath(expectedTestPath)
+      // Config
+      .withConfig(
+        new Map<string, string>([['goToTest.strategy', 'maven-like']])
+      );
+
+    When.extensionIsBuilt();
+    await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
+
+    Then.openedDocumentPathIs(expectedTestPath);
+    Then.createdFileIs(expectedTestPath);
+  });
+
+  const When = {
+    extensionIsBuilt() {
+      const extension = buildExtension(vscodeNSMock);
+      extension.activate(instance(extensionContextMock));
+      return extension;
+    }
+  };
+
+  const Then = {
+    openedDocumentPathIs(expectedTestPath: string) {
+      const openTextDocArgs = vscodeNSHandler.captureOpenTextDocument().last();
+      const uriUsed: URI = openTextDocArgs[0] as URI;
+      expect(uriUsed.toString()).toBe(expectedTestPath);
+    },
+
+    showedErrorMessageIs(expectedErrorMessage: string) {
+      const [message] = vscodeNSHandler.captureShowErrorMessage().last();
+      expect(message).toBeDefined();
+      expect(message).toEqual(expectedErrorMessage);
+    },
+
+    createdFileIs(expectedCreatedFilePath: string) {
+      console.error('Then.createdFileIs assertion Not Implemented!!!');
+      expect(expectedCreatedFilePath).toBe('Then.createdFileIs assertion Not Implemented!!!');
+    }
+  };
 });
