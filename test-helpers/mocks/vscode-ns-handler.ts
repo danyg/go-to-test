@@ -116,6 +116,12 @@ export class VSCodeNSHandler {
     return this;
   }
 
+  public withNotExistantFilePath(filePath: string) {
+    console.error(`${this.constructor.name}::withNotExistantFilePath Not Implemented`);
+
+    return this;
+  }
+
   public captureOpenTextDocument() {
     return capture(this.vsCodeWorkspaceMock.openTextDocument);
   }
