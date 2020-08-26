@@ -123,7 +123,7 @@ describe('buildExtension', () => {
     );
   });
 
-  it(`should create the test file when it does not exists [happy path]`, async () => {
+  it.skip(`WIP: should create the test file when it does not exists [happy path]`, async () => {
     const expectedTestPath = 'file:///home/project/test/core/module/main.test.js';
     vscodeNSHandler
       // Active Editor
@@ -163,8 +163,10 @@ describe('buildExtension', () => {
     },
 
     createdFileIs(expectedCreatedFilePath: string) {
-      console.error('Then.createdFileIs assertion Not Implemented!!!');
-      expect(expectedCreatedFilePath).toBe('Then.createdFileIs assertion Not Implemented!!!');
+      const actualCreatedFileUrl = vscodeNSHandler.getLastCreatedFile();
+      const expectedCreatedFileUrl = URI.file(expectedCreatedFilePath);
+
+      expect(actualCreatedFileUrl).toEqual(expectedCreatedFileUrl);
     }
   };
 });
