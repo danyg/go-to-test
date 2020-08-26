@@ -1,3 +1,6 @@
+# Issue 6 Routines
+
+```typescript
 import * as vscode from 'vscode';
 
 /**
@@ -10,7 +13,9 @@ export function createFile(filePath: string) {
   workspaceEdit.createFile(fileURI);
   vscode.workspace.applyEdit(workspaceEdit);
 }
+```
 
+```typescript
 /**
  * Code to know if a file exists
  * TODO move to proper place
@@ -24,7 +29,9 @@ export async function fileExists(filePath: string) {
     return false;
   }
 }
+```
 
+```typescript
 /**
  * Code to ask user Yes or No
  * TODO move to proper place
@@ -36,3 +43,4 @@ export async function askUserYesOrNo(actionDescription: string): Promise<boolean
 
   return answer === YES;
 }
+```
