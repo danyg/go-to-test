@@ -56,27 +56,27 @@ describe('buildExtension', () => {
   testStrategy({
     strategy: 'maven-like',
     actualPath: '/home/project/src/core/module/main.js',
-    expectedTestPath: 'file:///home/project/test/core/module/main.test.js'
+    expectedTestPath: '/home/project/test/core/module/main.test.js'
   });
   testStrategy({
     strategy: 'maven',
     actualPath: '/home/project/src/main/package/Main.java',
-    expectedTestPath: 'file:///home/project/src/test/package/MainTest.java'
+    expectedTestPath: '/home/project/src/test/package/MainTest.java'
   });
   testStrategy({
     strategy: 'same-directory',
     actualPath: '/home/project/src/core/module/main.js',
-    expectedTestPath: 'file:///home/project/src/core/module/main.test.js'
+    expectedTestPath: '/home/project/src/core/module/main.test.js'
   });
   testStrategy({
     strategy: '__tests__',
     actualPath: '/home/project/src/core/module/main.js',
-    expectedTestPath: 'file:///home/project/src/core/module/__tests__/main.js'
+    expectedTestPath: '/home/project/src/core/module/__tests__/main.js'
   });
   testStrategy({
     strategy: 'custom',
     actualPath: '/home/project/src/core/module/main.js',
-    expectedTestPath: 'file:///home/project/theTests/core/module/main.js',
+    expectedTestPath: '/home/project/theTests/core/module/main.js',
     extraConfig: [
       ['goToTest.match', '/(.*)src(.*)/'],
       ['goToTest.replace', '/$1theTests$2/']
@@ -86,7 +86,7 @@ describe('buildExtension', () => {
   testStrategy({
     strategy: 'custom',
     actualPath: '/home/project/src/core/module/main.js',
-    expectedTestPath: 'file:///home/project/test/core/module/main.spec.js'
+    expectedTestPath: '/home/project/test/core/module/main.spec.js'
   });
 
   it(`should advice the user of an error in the configuration When wrong strategy [sad path]`, async () => {
@@ -123,8 +123,8 @@ describe('buildExtension', () => {
     );
   });
 
-  it.skip(`WIP: should create the test file when it does not exists [happy path]`, async () => {
-    const expectedTestPath = 'file:///home/project/test/core/module/main.test.js';
+  it(`should create the test file when it does not exists [happy path]`, async () => {
+    const expectedTestPath = '/home/project/test/core/module/main.test.js';
     vscodeNSHandler
       // Active Editor
       .withActiveEditor('/home/project/src/core/module/main.js')
@@ -153,7 +153,7 @@ describe('buildExtension', () => {
     openedDocumentPathIs(expectedTestPath: string) {
       const openTextDocArgs = vscodeNSHandler.captureOpenTextDocument().last();
       const uriUsed: URI = openTextDocArgs[0] as URI;
-      expect(uriUsed.toString()).toBe(expectedTestPath);
+      expect(uriUsed.path).toBe(expectedTestPath);
     },
 
     showedErrorMessageIs(expectedErrorMessage: string) {

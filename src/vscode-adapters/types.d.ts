@@ -23,7 +23,9 @@ type VSCodeFileStat = vscode.FileStat;
 type VSCodeFSStatFn = (uri: GoToTestURI) => Thenable<VSCodeFileStat>;
 type VSCodeWorkspaceEdit = vscode.WorkspaceEdit;
 type VSCodeWorkspaceApplyEditFn = typeof vscode.workspace.applyEdit;
-type GoToTestWorkspaceApplyEditFn = (edit: GoToTestWorkspaceEdit) => Thenable<boolean>;
+type GoToTestWorkspaceApplyEditFn = (
+  edit: GoToTestWorkspaceEdit | VSCodeWorkspaceEdit
+) => Thenable<boolean>;
 type GoToTestURI = URI | VSCodeURI;
 
 type UriClass = {
@@ -45,7 +47,7 @@ export interface VSCodeWorkspace {
   openTextDocument: OpenTextDocumentFn;
   getConfiguration: GetConfigurationFn;
   fs: VSCodeFS;
-  applyEdit: GoToTestWorkspaceApplyEditFn | VSCodeWorkspaceApplyEditFn;
+  applyEdit: GoToTestWorkspaceApplyEditFn;
 }
 
 export interface VSCodeCommands {

@@ -26,4 +26,23 @@ export default class VsCodeSystem implements System {
     const doc: VSCodeTextDocument = await this.vscode.workspace.openTextDocument(uri);
     await this.vscode.window.showTextDocument(doc);
   }
+
+  public async createFile(filePath: string) {
+    const workspaceEdit = new this.vscode.WorkspaceEdit();
+    const fileURI = this.vscode.Uri.file(filePath);
+    workspaceEdit.createFile(fileURI);
+    await this.vscode.workspace.applyEdit(workspaceEdit);
+    // throw new Error(`Not implemented ${filePath}`);
+    return;
+  }
+
+  public async fileExists(filePath: string): Promise<boolean> {
+    const fileURI = this.vscode.Uri.file(filePath);
+    try {
+      await this.vscode.workspace.fs.stat(fileURI);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
