@@ -70,11 +70,13 @@ class SystemDouble implements System {
     return this.__CreatedFile === NOT_SET_STRING;
   }
 
-  public __Get_CreatedFilePath(): string {
+  public __Assert_createFile_Was_Called() {
     if (this.__IS_NOT_CreatedFilePath()) {
       throw new Error('System.createFile was not called as expected. FAILED TEST!');
     }
+  }
 
+  public __Get_CreatedFilePath(): string {
     return this.__CreatedFile;
   }
 

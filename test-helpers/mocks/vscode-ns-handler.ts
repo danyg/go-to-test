@@ -93,6 +93,7 @@ export class VSCodeNSHandler {
       Uri: URI,
       commands: instance(this.vsCodeCommandsMock)
     };
+    this.vscodeNSMock.workspace.fs = instance(this.vscodeFSMock);
 
     this.monkeyPatchingCommandsRegisterCommand();
     this.mockOpenTextDocument();
@@ -145,6 +146,14 @@ export class VSCodeNSHandler {
     return this;
   }
 
+  public withExistantFilePath(filePath: string) {
+    const expectedUri = URI.file(filePath);
+
+    when(this.vscodeFSMock.stat(objectContaining({ path: expectedUri.path }))).thenResolve();
+
+    return this;
+  }
+
   public captureOpenTextDocument() {
     return capture(this.vsCodeWorkspaceMock.openTextDocument);
   }
@@ -165,6 +174,12 @@ export class VSCodeNSHandler {
     const args = this.captureWorkspaceApplyEdit().last();
     const workspaceEdit = (args[0] as unknown) as WorkspaceEditDouble;
     return workspaceEdit.createdFile;
+  }
+
+  public assertNoFileCreated() {
+    verify(
+      this.vsCodeWorkspaceMock.applyEdit(anyOfClass<WorkspaceEditDouble>(WorkspaceEditDouble))
+    ).never();
   }
 
   public async triggerVSCodeCommand(cmdStr: string) {

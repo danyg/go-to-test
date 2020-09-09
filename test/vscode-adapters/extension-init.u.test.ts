@@ -41,6 +41,7 @@ describe('buildExtension', () => {
       vscodeNSHandler
         // Active Editor
         .withActiveEditor(actualPath)
+        .withExistantFilePath(expectedTestPath)
         // Config
         .withConfig(
           new Map<string, string>([['goToTest.strategy', strategy], ...extraConfig])
@@ -141,6 +142,24 @@ describe('buildExtension', () => {
     Then.createdFileIs(expectedTestPath);
   });
 
+  it(`should NOT create the test file when it does exists [happy path]`, async () => {
+    const expectedTestPath = '/home/project/test/core/module/main.test.js';
+    vscodeNSHandler
+      // Active Editor
+      .withActiveEditor('/home/project/src/core/module/main.js')
+      .withExistantFilePath(expectedTestPath)
+      // Config
+      .withConfig(
+        new Map<string, string>([['goToTest.strategy', 'maven-like']])
+      );
+
+    When.extensionIsBuilt();
+    await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
+
+    Then.openedDocumentPathIs(expectedTestPath);
+    Then.noFileWasCreated();
+  });
+
   const When = {
     extensionIsBuilt() {
       const extension = buildExtension(vscodeNSMock);
@@ -166,7 +185,11 @@ describe('buildExtension', () => {
       const actualCreatedFileUrl = vscodeNSHandler.getLastCreatedFile();
       const expectedCreatedFileUrl = URI.file(expectedCreatedFilePath);
 
-      expect(actualCreatedFileUrl).toEqual(expectedCreatedFileUrl);
+      expect(actualCreatedFileUrl.path).toEqual(expectedCreatedFileUrl.path);
+    },
+
+    noFileWasCreated() {
+      vscodeNSHandler.assertNoFileCreated();
     }
   };
 });
