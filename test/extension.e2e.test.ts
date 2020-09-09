@@ -38,7 +38,7 @@ describe('Extension Test Suite', () => {
       .toMatch(endWith(pathOsAgnostic(tstFile)));
   });
 
-  it.skip('WIP: should create the test file when it does not exists', async () => {
+  it('should create the test file when it does not exists', async () => {
     const srcFile = 'maven-strategy/src/main/java/com/company/package1/MyUntestedClass.java';
     const expectedCreatedFile =
       'maven-strategy/src/test/java/com/company/package1/MyUntestedClassTest.java';
