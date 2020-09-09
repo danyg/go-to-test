@@ -295,6 +295,27 @@ describe('GoToTest', () => {
       );
     });
   });
+
+  describe('Create Test File', () => {
+    it('should create the test file when it does not exists', async () => {
+      const expectedTestFilePath = '/src/module/sub-module/sub-sub-module/__tests__/my-file.js';
+      const { given, when, then } = TestBuilder.build();
+      given
+        .theFollowingConfiguration(
+          ConfigurationDouble.getInstance().withStrategy(StrategyOption.__TESTS__)
+        )
+        .and.theFile(expectedTestFilePath)
+        .doesNotExists()
+        .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
+
+      await when.goToTestIsActioned();
+
+      then
+        .theTestFile('/src/module/sub-module/sub-sub-module/__tests__/my-file.js')
+        .isCreated()
+        .and.isOpened();
+    });
+  });
 });
 
 const defaultConfiguration = ConfigurationDouble.getInstance().withStrategy(
@@ -363,6 +384,16 @@ class TestBuilder {
     return this;
   }
 
+  public theFile(filePath: string) {
+    return {
+      doesNotExists: () => {
+        this.system.__Tag_File_As_Not_Existant(filePath);
+
+        return this;
+      }
+    };
+  }
+
   public theUserHaveNotOpenedAnyFileYet() {
     this.system.__On_getActiveTextEditorFilePath(null);
     return this;
@@ -376,17 +407,28 @@ class TestBuilder {
 
   // Then
 
-  public theTestFile(filePath: string) {
-    this.testFilePath = filePath;
+  public theTestFile(expectedFilePath: string) {
+    const semantics = {
+      isOpened: () => {
+        const openedFile = this.system.__Get_OpenedFilePath();
+        expect(openedFile).toEqual(expectedFilePath);
 
-    return this;
-  }
+        return semantics;
+      },
 
-  public isOpened() {
-    const openedFile = this.system.__Get_OpenedFilePath();
-    expect(openedFile).toEqual(this.testFilePath);
+      isCreated: () => {
+        const createdFile = this.system.__Get_CreatedFilePath();
+        expect(createdFile).toEqual(expectedFilePath);
 
-    return this;
+        return semantics;
+      },
+
+      get and() {
+        return semantics;
+      }
+    };
+
+    return semantics;
   }
 
   public nothingIsDone() {

@@ -9,6 +9,8 @@ class SystemDouble implements System {
   private commands: Record<string, Command> = {};
   private getActiveTextEditorFilePathResponse: ActiveFilePath = NOT_SET_STRING;
   private __OpenedFilePath: string = NOT_SET_STRING;
+  private __CreatedFile: string = NOT_SET_STRING;
+  private __filesThatDoNotExists: string[] = [];
 
   public registerCommand(command: string, callback: Command, thisArg?: any): Disposable {
     this.commands[command] = callback;
@@ -29,6 +31,17 @@ class SystemDouble implements System {
     this.__OpenedFilePath = filePath;
   }
 
+  public async createFile(filePath: string) {
+    this.__CreatedFile = filePath;
+  }
+
+  public async fileExists(filePath: string) {
+    if (this.__filesThatDoNotExists.includes(filePath)) {
+      return false;
+    }
+    return true;
+  }
+
   public async __ExecuteCommand(command: string) {
     if (!(command in this.commands)) {
       throw new Error(`Command "${command}" Has not been. TEST FAILED!`);
@@ -47,10 +60,26 @@ class SystemDouble implements System {
 
   public __Get_OpenedFilePath(): string {
     if (this.__IS_NOT_OpenedFilePath()) {
-      throw new Error('openFileInEditor was not called as expected. FAILED TEST!');
+      throw new Error('System.openFileInEditor was not called as expected. FAILED TEST!');
     }
 
     return this.__OpenedFilePath;
+  }
+
+  public __IS_NOT_CreatedFilePath(): boolean {
+    return this.__CreatedFile === NOT_SET_STRING;
+  }
+
+  public __Get_CreatedFilePath(): string {
+    if (this.__IS_NOT_CreatedFilePath()) {
+      throw new Error('System.createFile was not called as expected. FAILED TEST!');
+    }
+
+    return this.__CreatedFile;
+  }
+
+  public __Tag_File_As_Not_Existant(filePath: string) {
+    this.__filesThatDoNotExists.push(filePath);
   }
 }
 

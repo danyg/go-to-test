@@ -164,7 +164,7 @@ export class VSCodeNSHandler {
 
     const args = this.captureWorkspaceApplyEdit().last();
     const workspaceEdit = (args[0] as unknown) as WorkspaceEditDouble;
-    return workspaceEdit.createdFile.toString();
+    return workspaceEdit.createdFile;
   }
 
   public async triggerVSCodeCommand(cmdStr: string) {
