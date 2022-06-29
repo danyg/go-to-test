@@ -4,7 +4,8 @@
   "description": "Toggle between test and file with different strategies",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.45.1"
+    "vscode": "^1.45.1",
+    "node": ">=14.0.0"
   },
   "categories": [
     "Other"
@@ -72,7 +73,7 @@
     "test:unit": "npm run compile && node out/test-helpers/run-unit-tests.js",
     "test:e2e": "node ./out/test-helpers/run-e2e-tests.js",
     "test:e2e:ci": "DISPLAY=:99.0 node ./out/test-helpers/run-e2e-tests.js",
-    "test:pit": "npx stryker run"
+    "test:pit": "stryker run"
   },
   "husky": {
     "hooks": {
