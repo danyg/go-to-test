@@ -16,7 +16,7 @@ jobs:
 
     # strategy:
     #   matrix:
-    #     node-version: [10.x]
+    #     node-version: [14.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -24,10 +24,10 @@ jobs:
       #   uses: actions/setup-node@v1
       #   with:
       #     node-version: ${{ matrix.node-version }}
-      - name: Use Node.js 10.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 10.x
+          node-version: 14.x
 
       - name: Start Xvfb
         if: ${{ always() }}
@@ -55,7 +55,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: pit-and-coverage-results
-          path: reports/mutation/html/
+          path: reports/mutation/
           if-no-files-found: warn
 
       - name: Stop Xvfb
