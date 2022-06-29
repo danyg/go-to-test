@@ -7,3 +7,4 @@ xvfb.pid
 
 # stryker temp files
 .stryker-tmp
+test-fixtures/maven-strategy/src/test/java/com/company/package1/MyUntestedClassTest.java

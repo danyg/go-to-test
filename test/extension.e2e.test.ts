@@ -14,7 +14,7 @@ describe('Extension Test Suite', () => {
     const srcFile = '/maven-like-strategy/src/package1/source.code.js';
     const tstFile = 'maven-like-strategy/test/package1/source.code.test.js';
     await given().vscode().isConfigured().withMavenLikeStrategy();
-    await given().user().had().openAFile(srcFile);
+    await given().user().has().openAFile(srcFile);
 
     await when().user().goesToTest();
 
@@ -25,10 +25,10 @@ describe('Extension Test Suite', () => {
   });
 
   it('should go to a test file using maven strategy', async () => {
-    const srcFile = '/maven-strategy/src/main/java/com/company/package/MyClass.java';
-    const tstFile = '/maven-strategy/src/test/java/com/company/package/MyClassTest.java';
+    const srcFile = '/maven-strategy/src/main/java/com/company/package1/MyClass.java';
+    const tstFile = '/maven-strategy/src/test/java/com/company/package1/MyClassTest.java';
     await given().vscode().isConfigured().withMavenStrategy();
-    await given().user().had().openAFile(srcFile);
+    await given().user().has().openAFile(srcFile);
 
     await when().user().goesToTest();
 
@@ -36,5 +36,19 @@ describe('Extension Test Suite', () => {
       .isExpected()
       .theActiveTextEditorFileName()
       .toMatch(endWith(pathOsAgnostic(tstFile)));
+  });
+
+  it('should create the test file when it does not exists', async () => {
+    const srcFile = 'maven-strategy/src/main/java/com/company/package1/MyUntestedClass.java';
+    const expectedCreatedFile =
+      'maven-strategy/src/test/java/com/company/package1/MyUntestedClassTest.java';
+    await given().fileSystem().doesNotHave(expectedCreatedFile);
+    await given().vscode().isConfigured().withMavenStrategy();
+    await given().user().has().openAFile(srcFile);
+
+    await when().user().goesToTest();
+
+    const theFS = await then().isExpected().theFileSystem();
+    theFS.toContain(expectedCreatedFile);
   });
 });

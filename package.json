@@ -73,7 +73,8 @@
     "test:unit": "npm run compile && node out/test-helpers/run-unit-tests.js",
     "test:e2e": "node ./out/test-helpers/run-e2e-tests.js",
     "test:e2e:ci": "DISPLAY=:99.0 node ./out/test-helpers/run-e2e-tests.js",
-    "test:pit": "stryker run"
+    "test:pit": "stryker run",
+    "manual": ".vscode-test/vscode-insiders/VSCode-linux-x64/bin/code-insiders --extensionDevelopmentPath=$(pwd) $(pwd)"
   },
   "husky": {
     "hooks": {

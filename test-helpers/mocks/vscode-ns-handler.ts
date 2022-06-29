@@ -1,18 +1,27 @@
 import {
-  VSCodeWindow,
-  VSCodeWorkspace,
-  VSCodeCommands,
-  GoToTestVsCodeNS,
-  ActiveTextEditor,
-  VSCodeTextEditor,
-  VSCodeTextDocument,
-  VSCodeWorkspaceConfiguration,
-  ShowErrorMessageFn
-} from '../../src/vscode-adapters/types';
-import { mock, instance, when, anyOfClass, anything, capture } from 'ts-mockito';
+  anything,
+  capture,
+  instance,
+  mock,
+  objectContaining,
+  when,
+  verify,
+  anyOfClass
+} from 'ts-mockito';
 import { URI } from 'vscode-uri';
 import { Disposable } from '../../src/interfaces/disposable';
-import { ConfigurationDouble } from './configuration-double';
+import {
+  GoToTestURI,
+  GoToTestVsCodeNS,
+  GoToTestWorkspaceEdit,
+  VSCodeCommands,
+  VSCodeFS,
+  VSCodeTextDocument,
+  VSCodeTextEditor,
+  VSCodeWindow,
+  VSCodeWorkspace,
+  VSCodeWorkspaceConfiguration
+} from '../../src/vscode-adapters/types';
 
 type Callback = (...args: any[]) => any;
 
@@ -47,6 +56,13 @@ class VSCodeConfigDouble extends Map<string, string> implements VSCodeWorkspaceC
   }
 }
 
+class WorkspaceEditDouble implements GoToTestWorkspaceEdit {
+  public createdFile!: GoToTestURI;
+  createFile(uri: GoToTestURI): void {
+    this.createdFile = uri;
+  }
+}
+
 export class VSCodeNSHandler {
   public readonly vsCodeWindowMock: VSCodeWindow;
   public readonly vsCodeWorkspaceMock: VSCodeWorkspace;
@@ -55,6 +71,7 @@ export class VSCodeNSHandler {
   public readonly newTextDocumentMock: VSCodeTextDocument;
   public readonly activeTextDocumentMock: VSCodeTextDocument;
   public readonly vscodeNSMock: GoToTestVsCodeNS;
+  public readonly vscodeFSMock: VSCodeFS;
 
   private commands: { [key: string]: Callback } = {};
   private configDouble!: VSCodeConfigDouble;
@@ -63,17 +80,20 @@ export class VSCodeNSHandler {
     this.vsCodeWindowMock = mock<VSCodeWindow>();
     this.vsCodeWorkspaceMock = mock<VSCodeWorkspace>();
     this.vsCodeCommandsMock = mock<VSCodeCommands>();
+    this.vscodeFSMock = mock<VSCodeFS>();
 
     this.activeTextEditorMock = mock<VSCodeTextEditor>();
     this.newTextDocumentMock = mock<VSCodeTextDocument>();
     this.activeTextDocumentMock = mock<VSCodeTextDocument>();
 
     this.vscodeNSMock = {
+      WorkspaceEdit: WorkspaceEditDouble,
       window: instance(this.vsCodeWindowMock),
       workspace: instance(this.vsCodeWorkspaceMock),
       Uri: URI,
       commands: instance(this.vsCodeCommandsMock)
     };
+    this.vscodeNSMock.workspace.fs = instance(this.vscodeFSMock);
 
     this.monkeyPatchingCommandsRegisterCommand();
     this.mockOpenTextDocument();
@@ -109,14 +129,56 @@ export class VSCodeNSHandler {
     return this;
   }
 
+  public withShowErrorMessageNeverResolved() {
+    when(this.vsCodeWindowMock.showErrorMessage(anything())).thenReturn(new Promise(() => {}));
+
+    return this;
+  }
+
+  public withNotExistantFilePath(filePath: string) {
+    const expectedUri = URI.file(filePath);
+
+    when(this.vscodeFSMock.stat(objectContaining({ path: expectedUri.path }))).thenReject(
+      new Error('mocked error for file not found')
+    );
+
+    return this;
+  }
+
+  public withExistantFilePath(filePath: string) {
+    const expectedUri = URI.file(filePath);
+
+    when(this.vscodeFSMock.stat(objectContaining({ path: expectedUri.path }))).thenResolve();
+
+    return this;
+  }
+
   public captureOpenTextDocument() {
     return capture(this.vsCodeWorkspaceMock.openTextDocument);
   }
 
-  public withThrowOnShowErrorMessage() {
-    this.monkeyPatchingWindowShowErrorToThrow();
+  public captureShowErrorMessage() {
+    return capture(this.vsCodeWindowMock.showErrorMessage);
+  }
 
-    return this;
+  public captureWorkspaceApplyEdit() {
+    return capture(this.vsCodeWorkspaceMock.applyEdit);
+  }
+
+  public getLastCreatedFile() {
+    verify(
+      this.vsCodeWorkspaceMock.applyEdit(anyOfClass<WorkspaceEditDouble>(WorkspaceEditDouble))
+    ).called();
+
+    const args = this.captureWorkspaceApplyEdit().last();
+    const workspaceEdit = (args[0] as unknown) as WorkspaceEditDouble;
+    return workspaceEdit.createdFile;
+  }
+
+  public assertNoFileCreated() {
+    verify(
+      this.vsCodeWorkspaceMock.applyEdit(anyOfClass<WorkspaceEditDouble>(WorkspaceEditDouble))
+    ).never();
   }
 
   public async triggerVSCodeCommand(cmdStr: string) {
@@ -136,14 +198,6 @@ export class VSCodeNSHandler {
     ) => {
       this.commands[command] = callback;
       return instance(disposableMock);
-    };
-  }
-
-  private originalShowErrorMessage!: ShowErrorMessageFn;
-  private monkeyPatchingWindowShowErrorToThrow() {
-    this.originalShowErrorMessage = this.vscodeNSMock.window.showErrorMessage;
-    this.vscodeNSMock.window.showErrorMessage = (message: string) => {
-      throw new Error(`vscode.window.showErrorMessage: ${message}`);
     };
   }
 }

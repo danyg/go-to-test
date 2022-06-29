@@ -39,48 +39,45 @@ describe('buildExtension', () => {
   }) {
     it(`should go to test from a source file [happy path] [Strategy: ${strategy}] ${extraTitle}`, async () => {
       vscodeNSHandler
-        .withThrowOnShowErrorMessage()
         // Active Editor
         .withActiveEditor(actualPath)
+        .withExistantFilePath(expectedTestPath)
         // Config
         .withConfig(
           new Map<string, string>([['goToTest.strategy', strategy], ...extraConfig])
         );
 
-      const extension = buildExtension(vscodeNSMock);
-      extension.activate(instance(extensionContextMock));
+      When.extensionIsBuilt();
       await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
 
-      const openTextDocArgs = vscodeNSHandler.captureOpenTextDocument().last();
-      const uriUsed: URI = openTextDocArgs[0] as URI;
-      expect(uriUsed.toString()).toBe(expectedTestPath);
+      Then.openedDocumentPathIs(expectedTestPath);
     });
   }
 
   testStrategy({
     strategy: 'maven-like',
     actualPath: '/home/project/src/core/module/main.js',
-    expectedTestPath: 'file:///home/project/test/core/module/main.test.js'
+    expectedTestPath: '/home/project/test/core/module/main.test.js'
   });
   testStrategy({
     strategy: 'maven',
     actualPath: '/home/project/src/main/package/Main.java',
-    expectedTestPath: 'file:///home/project/src/test/package/MainTest.java'
+    expectedTestPath: '/home/project/src/test/package/MainTest.java'
   });
   testStrategy({
     strategy: 'same-directory',
     actualPath: '/home/project/src/core/module/main.js',
-    expectedTestPath: 'file:///home/project/src/core/module/main.test.js'
+    expectedTestPath: '/home/project/src/core/module/main.test.js'
   });
   testStrategy({
     strategy: '__tests__',
     actualPath: '/home/project/src/core/module/main.js',
-    expectedTestPath: 'file:///home/project/src/core/module/__tests__/main.js'
+    expectedTestPath: '/home/project/src/core/module/__tests__/main.js'
   });
   testStrategy({
     strategy: 'custom',
     actualPath: '/home/project/src/core/module/main.js',
-    expectedTestPath: 'file:///home/project/theTests/core/module/main.js',
+    expectedTestPath: '/home/project/theTests/core/module/main.js',
     extraConfig: [
       ['goToTest.match', '/(.*)src(.*)/'],
       ['goToTest.replace', '/$1theTests$2/']
@@ -90,56 +87,109 @@ describe('buildExtension', () => {
   testStrategy({
     strategy: 'custom',
     actualPath: '/home/project/src/core/module/main.js',
-    expectedTestPath: 'file:///home/project/test/core/module/main.spec.js'
+    expectedTestPath: '/home/project/test/core/module/main.spec.js'
   });
 
   it(`should advice the user of an error in the configuration When wrong strategy [sad path]`, async () => {
     vscodeNSHandler
-      .withThrowOnShowErrorMessage()
+      .withShowErrorMessageNeverResolved()
       // Active Editor
       .withActiveEditor('/home/project/src/core/module/main.js')
       // Config
       .withConfig(
         new Map<string, string>([['goToTest.strategy', 'wrong-strategy']])
       );
-    let error;
 
-    const extension = buildExtension(vscodeNSMock);
-    extension.activate(instance(extensionContextMock));
+    When.extensionIsBuilt();
+    await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
 
-    try {
-      await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error.message).toEqual(
-      'vscode.window.showErrorMessage: Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
+    Then.showedErrorMessageIs(
+      'Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
     );
   });
 
   it(`should advice the user of an error in the configuration When missing strategy config [sad path]`, async () => {
     vscodeNSHandler
-      .withThrowOnShowErrorMessage()
+      .withShowErrorMessageNeverResolved()
       // Active Editor
       .withActiveEditor('/home/project/src/core/module/main.js')
       // Config
       .withConfig(new Map<string, string>([]));
-    let error;
 
-    const extension = buildExtension(vscodeNSMock);
-    extension.activate(instance(extensionContextMock));
+    When.extensionIsBuilt();
+    await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
 
-    try {
-      await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeDefined();
-    expect(error.message).toEqual(
-      'vscode.window.showErrorMessage: Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
+    Then.showedErrorMessageIs(
+      'Go To Test Extension: The given value on settings.json for "go-to-test.strategy" is INVALID.'
     );
   });
+
+  it(`should create the test file when it does not exists [happy path]`, async () => {
+    const expectedTestPath = '/home/project/test/core/module/main.test.js';
+    vscodeNSHandler
+      // Active Editor
+      .withActiveEditor('/home/project/src/core/module/main.js')
+      .withNotExistantFilePath(expectedTestPath)
+      // Config
+      .withConfig(
+        new Map<string, string>([['goToTest.strategy', 'maven-like']])
+      );
+
+    When.extensionIsBuilt();
+    await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
+
+    Then.openedDocumentPathIs(expectedTestPath);
+    Then.createdFileIs(expectedTestPath);
+  });
+
+  it(`should NOT create the test file when it does exists [happy path]`, async () => {
+    const expectedTestPath = '/home/project/test/core/module/main.test.js';
+    vscodeNSHandler
+      // Active Editor
+      .withActiveEditor('/home/project/src/core/module/main.js')
+      .withExistantFilePath(expectedTestPath)
+      // Config
+      .withConfig(
+        new Map<string, string>([['goToTest.strategy', 'maven-like']])
+      );
+
+    When.extensionIsBuilt();
+    await vscodeNSHandler.triggerVSCodeCommand('danyg-go-to-test.goToTest');
+
+    Then.openedDocumentPathIs(expectedTestPath);
+    Then.noFileWasCreated();
+  });
+
+  const When = {
+    extensionIsBuilt() {
+      const extension = buildExtension(vscodeNSMock);
+      extension.activate(instance(extensionContextMock));
+      return extension;
+    }
+  };
+
+  const Then = {
+    openedDocumentPathIs(expectedTestPath: string) {
+      const openTextDocArgs = vscodeNSHandler.captureOpenTextDocument().last();
+      const uriUsed: URI = openTextDocArgs[0] as URI;
+      expect(uriUsed.path).toBe(expectedTestPath);
+    },
+
+    showedErrorMessageIs(expectedErrorMessage: string) {
+      const [message] = vscodeNSHandler.captureShowErrorMessage().last();
+      expect(message).toBeDefined();
+      expect(message).toEqual(expectedErrorMessage);
+    },
+
+    createdFileIs(expectedCreatedFilePath: string) {
+      const actualCreatedFileUrl = vscodeNSHandler.getLastCreatedFile();
+      const expectedCreatedFileUrl = URI.file(expectedCreatedFilePath);
+
+      expect(actualCreatedFileUrl.path).toEqual(expectedCreatedFileUrl.path);
+    },
+
+    noFileWasCreated() {
+      vscodeNSHandler.assertNoFileCreated();
+    }
+  };
 });

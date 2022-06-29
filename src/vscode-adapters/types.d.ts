@@ -1,6 +1,10 @@
 import * as vscode from 'vscode';
 import { URI } from 'vscode-uri';
 
+interface GoToTestWorkspaceEdit {
+  createFile(uri: GoToTestURI): void;
+}
+
 // type alias
 type RegisterCommandFn = typeof vscode.commands.registerCommand;
 type StringToVSCodeURIFn = typeof vscode.Uri.file;
@@ -15,10 +19,22 @@ type ShowErrorMessageFn = typeof vscode.window.showErrorMessage;
 type ShowInformationMessageFn = typeof vscode.window.showInformationMessage;
 type ActiveTextEditor = vscode.TextEditor | undefined;
 type VSCodeWorkspaceConfiguration = vscode.WorkspaceConfiguration;
+type VSCodeFileStat = vscode.FileStat;
+type VSCodeFSStatFn = (uri: GoToTestURI) => Thenable<VSCodeFileStat>;
+type VSCodeWorkspaceEdit = vscode.WorkspaceEdit;
+type VSCodeWorkspaceApplyEditFn = typeof vscode.workspace.applyEdit;
+type GoToTestWorkspaceApplyEditFn = (
+  edit: GoToTestWorkspaceEdit | VSCodeWorkspaceEdit
+) => Thenable<boolean>;
+type GoToTestURI = URI | VSCodeURI;
 
 type UriClass = {
-  file: (str: string) => URI | VSCodeURI;
+  file: (str: string) => GoToTestURI;
 };
+
+export interface VSCodeFS {
+  stat: VSCodeFSStatFn;
+}
 
 export interface VSCodeWindow {
   activeTextEditor: ActiveTextEditor;
@@ -30,6 +46,8 @@ export interface VSCodeWindow {
 export interface VSCodeWorkspace {
   openTextDocument: OpenTextDocumentFn;
   getConfiguration: GetConfigurationFn;
+  fs: VSCodeFS;
+  applyEdit: GoToTestWorkspaceApplyEditFn;
 }
 
 export interface VSCodeCommands {
@@ -48,6 +66,7 @@ export interface VSCodeSystemIO {
 }
 
 export interface GoToTestVsCodeNS {
+  WorkspaceEdit: new () => GoToTestWorkspaceEdit;
   window: VSCodeWindow;
   workspace: VSCodeWorkspace;
   Uri: UriClass;

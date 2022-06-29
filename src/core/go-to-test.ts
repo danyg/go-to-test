@@ -35,15 +35,23 @@ export default class GoToTest {
     return this.system.registerCommand('danyg-go-to-test.goToTest', this.executeCommand.bind(this));
   }
 
-  private async executeCommand() {
+  private async executeCommand(): Promise<void> {
     try {
       const currentFile = this.system.getActiveTextEditorFilePath();
       if (null !== currentFile) {
         const testFilePath = this.getTestFilePath(currentFile);
+        await this.handleFileExistence(testFilePath);
         await this.system.openFileInEditor(testFilePath);
       }
     } catch (e) {
-      return this.ui.alertUserOfError(e);
+      this.ui.alertUserOfError(e);
+    }
+  }
+
+  private async handleFileExistence(testFilePath: string) {
+    const fileExists = await this.system.fileExists(testFilePath);
+    if (!fileExists) {
+      await this.system.createFile(testFilePath);
     }
   }
 
