@@ -81,10 +81,10 @@
     }
   },
   "devDependencies": {
-    "@stryker-mutator/core": "^3.3.1",
+    "@stryker-mutator/core": "^6.1.2",
     "@stryker-mutator/mocha-framework": "^3.3.1",
-    "@stryker-mutator/mocha-runner": "^3.3.1",
-    "@stryker-mutator/typescript": "^3.3.1",
+    "@stryker-mutator/mocha-runner": "^6.1.2",
+    "@stryker-mutator/typescript": "^4.0.0",
     "@types/glob": "^7.1.1",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
@@ -96,7 +96,7 @@
     "eslint-plugin-prettier": "^3.1.3",
     "expect": "^26.0.1",
     "glob": "^7.1.6",
-    "gnomon": "^1.5.0",
+    "gnomon": "^1.4.6",
     "husky": "^4.2.5",
     "mocha": "^7.1.2",
     "prettier": "^2.0.5",
