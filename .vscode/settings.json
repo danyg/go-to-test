@@ -20,5 +20,7 @@
 		"maven",
 		"spec",
 		"transpilers"
-	]
+	],
+  "goToTest.replace": "$<projectPath>test$<moduleInternalPath>.u.test.$<ext>",
+  "goToTest.strategy": "custom"
 }
