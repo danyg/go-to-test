@@ -69,7 +69,7 @@
     "test:all:ci": "npm run test:pretest && npm run test:unit && npm run test:e2e:ci && npm run test:pit",
     "test:pretest": "npm run compile && npm run lint",
     "test:tests": "npm run test:unit && npm run test:e2e",
-    "test:unit": "node out/test-helpers/run-unit-tests.js",
+    "test:unit": "npm run compile && node out/test-helpers/run-unit-tests.js",
     "test:e2e": "node ./out/test-helpers/run-e2e-tests.js",
     "test:e2e:ci": "DISPLAY=:99.0 node ./out/test-helpers/run-e2e-tests.js",
     "test:pit": "npx stryker run"
