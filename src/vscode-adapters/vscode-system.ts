@@ -32,8 +32,6 @@ export default class VsCodeSystem implements System {
     const fileURI = this.vscode.Uri.file(filePath);
     workspaceEdit.createFile(fileURI);
     await this.vscode.workspace.applyEdit(workspaceEdit);
-    // throw new Error(`Not implemented ${filePath}`);
-    return;
   }
 
   public async fileExists(filePath: string): Promise<boolean> {

@@ -66,7 +66,7 @@ export interface VSCodeSystemIO {
 }
 
 export interface GoToTestVsCodeNS {
-  WorkspaceEdit: new () => GoToTestWorkspaceEdit; // TODO HOW TO EXPORT THIS AS CONSTRUCTOR
+  WorkspaceEdit: new () => GoToTestWorkspaceEdit;
   window: VSCodeWindow;
   workspace: VSCodeWorkspace;
   Uri: UriClass;

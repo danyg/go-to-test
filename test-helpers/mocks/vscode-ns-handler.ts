@@ -130,7 +130,6 @@ export class VSCodeNSHandler {
   }
 
   public withShowErrorMessageNeverResolved() {
-    // @ts-ignore
     when(this.vsCodeWindowMock.showErrorMessage(anything())).thenReturn(new Promise(() => {}));
 
     return this;
