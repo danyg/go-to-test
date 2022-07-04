@@ -2,9 +2,9 @@ import * as expect from 'expect';
 import { instance, mock, when } from 'ts-mockito';
 import { ExtensionContext } from 'vscode';
 import { URI } from 'vscode-uri';
-import { buildExtension } from '../../src/vscode-adapters/extension-init';
-import { GoToTestVsCodeNS } from '../../src/vscode-adapters/types';
-import { VSCodeNSHandler } from '../../test-helpers/mocks/vscode-ns-handler';
+import { buildExtension } from 'vscode-adapters/extension-init';
+import { GoToTestVsCodeNS } from 'vscode-adapters/types';
+import { VSCodeNSHandler } from 'test-helpers/mocks/vscode-ns-handler';
 
 describe('buildExtension', () => {
   let vscodeNSHandler: VSCodeNSHandler;

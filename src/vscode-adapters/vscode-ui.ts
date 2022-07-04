@@ -1,4 +1,4 @@
-import UserInterface from '../interfaces/user-interface';
+import UserInterface from 'interfaces/user-interface';
 import { VSCodeWindow, GoToTestVsCodeNS } from './types';
 
 export default class VSCodeUI implements UserInterface {

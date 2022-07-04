@@ -1,4 +1,4 @@
-import UserInterface from '../../src/interfaces/user-interface';
+import UserInterface from 'interfaces/user-interface';
 import { mock } from 'ts-mockito';
 
 class UIDouble implements UserInterface {

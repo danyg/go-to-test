@@ -1,9 +1,9 @@
 import { verify, instance, anyOfClass, capture, resetCalls } from 'ts-mockito';
 import * as expect from 'expect';
-import GoToTest from '../src/core/go-to-test';
-import UserInterface from '../src/interfaces/user-interface';
-import { ExtensionContext } from '../src/interfaces/disposable';
-import Configuration, { StrategyOption } from '../src/interfaces/configuration';
+import GoToTest from 'core/go-to-test';
+import UserInterface from 'interfaces/user-interface';
+import { ExtensionContext } from 'interfaces/disposable';
+import Configuration, { StrategyOption } from 'interfaces/configuration';
 import UIMock from './mocks/ui-mock';
 import SystemDouble from './mocks/system-double';
 import { ConfigurationDouble } from './mocks/configuration-double';

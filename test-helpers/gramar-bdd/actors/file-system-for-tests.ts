@@ -1,6 +1,6 @@
 import { promises as fsPromises } from 'fs';
 import * as glob from 'glob';
-import { testWorkspace } from '../../test-paths';
+import { testWorkspace } from 'test-helpers/test-paths';
 
 export default class FileSystemForTests {
   public static getInstance() {

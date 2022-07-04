@@ -1,138 +1,145 @@
 {
-  "name": "danyg-go-to-test",
-  "displayName": "Go To Test",
-  "description": "Toggle between test and file with different strategies",
-  "version": "1.0.0",
-  "repository": {
-    "url": "https://github.com/danyg/go-to-test.git",
-    "type": "git"
-  },
-  "license": "MIT",
-  "icon": "assets/icon.png",
-  "homepage": "https://github.com/danyg/go-to-test",
-  "bugs": "https://github.com/danyg/go-to-test/issues",
-  "publisher": "danyg",
-  "engines": {
-    "vscode": "^1.45.1",
-    "node": ">=14.0.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "keywords": [
-    "test",
-    "spec",
-    "jest",
-    "jasmine",
-    "rspec",
-    "switcher",
-    "switch",
-    "toggle",
-    "go to"
-  ],
-  "activationEvents": [
-    "onCommand:danyg-go-to-test.goToTest"
-  ],
-  "main": "./out/src/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "danyg-go-to-test.goToTest",
-        "title": "Go To Test"
-      }
-    ],
-    "configuration": {
-      "title": "Go To Test",
-      "properties": {
-        "goToTest.strategy": {
-          "type": "string",
-          "default": "same-directory",
-          "enum": [
-            "maven-like",
-            "maven",
-            "same-directory",
-            "__tests__",
-            "custom"
-          ],
-          "markdownEnumDescriptions": [
-            "Maven Like style, where the test files are in a different directory (test instead of src) at project root level with the same directory structure as the source files and `.test.` and same extension.",
-            "Maven style, where the test files are in a different directory (test instead of main) at src level with the same directory structure as the source files and `.test.` and same extension.",
-            "Same directory style, where the test files are in the same directory as the source file, with the extra `.test.` and same extension.",
-            "__tests__ directory style, where the test are inside of a `__tests__` directory inside the same directory as the source file.",
-            "Custom, you must define `#goToTest.match#` and `#goToTest.replace#`"
-          ],
-          "description": "Strategy to be used to locate or create the test file."
-        },
-        "goToTest.match": {
-          "type": "string",
-          "default": "^(?<projectPath>.*)src(?<moduleInternalPath>.*)\\.(?<ext>[tj]sx?)$",
-          "markdownDescription": "(Only used when `#goToTest.strategy#`=`custom`) RegExp which would match the source file path and create matching groups to be rearranged by `#goToTest.replace#`"
-        },
-        "goToTest.replace": {
-          "type": "string",
-          "default": "$<projectPath>test$<moduleInternalPath>.test.$<ext>",
-          "markdownDescription": "(Only used when `#goToTest.strategy#`=`custom`) Template to compose the path based on the match of the source file."
-        }
-      }
-    },
-    "keybindings": [
-      {
-        "command": "danyg-go-to-test.goToTest",
-        "key": "ctrl+shift+2",
-        "mac": "cmd+shift+2",
-        "when": "editorTextFocus"
-      }
-    ]
-  },
-  "scripts": {
-    "ci:start": "Xvfb :99 -screen 0 1920x1080x24 & echo $! > ./xvfb.pid",
-    "ci:stop": "kill $(cat ./xvfb.pid)",
-    "vscode:prepublish": "npm run compile",
-    "clean": "rm -rf ./out",
-    "compile": "npm run clean && tsc -p ./",
-    "lint": "eslint ./ --ext ts",
-    "watch": "tsc -watch -p ./",
-    "test": "npm run test:all -d",
-    "test:ci": "npm run test:all:ci -d",
-    "test:all": "npm run test:pretest && npm run test:tests && npm run test:pit",
-    "test:all:ci": "npm run test:pretest && npm run test:unit && npm run test:e2e:ci && npm run test:pit",
-    "test:pretest": "npm run compile && npm run lint",
-    "test:tests": "npm run test:unit && npm run test:e2e",
-    "test:unit": "npm run compile && node out/test-helpers/run-unit-tests.js",
-    "test:e2e": "node ./out/test-helpers/run-e2e-tests.js",
-    "test:e2e:ci": "DISPLAY=:99.0 node ./out/test-helpers/run-e2e-tests.js",
-    "test:pit": "stryker run",
-    "manual": ".vscode-test/vscode-insiders/VSCode-linux-x64/bin/code-insiders --extensionDevelopmentPath=$(pwd) $(pwd)"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint",
-      "pre-push": "npm run test:unit"
-    }
-  },
-  "devDependencies": {
-    "@stryker-mutator/core": "^6.1.2",
-    "@stryker-mutator/mocha-framework": "^3.3.1",
-    "@stryker-mutator/mocha-runner": "^6.1.2",
-    "@stryker-mutator/typescript": "^4.0.0",
-    "@types/glob": "^7.1.1",
-    "@types/mocha": "^7.0.2",
-    "@types/node": "^13.11.0",
-    "@types/vscode": "^1.45.1",
-    "@typescript-eslint/eslint-plugin": "^2.30.0",
-    "@typescript-eslint/parser": "^2.30.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.3",
-    "expect": "^26.0.1",
-    "glob": "^7.1.6",
-    "gnomon": "^1.4.6",
-    "husky": "^4.2.5",
-    "mocha": "^7.1.2",
-    "prettier": "^2.0.5",
-    "ts-mockito": "^2.6.1",
-    "typescript": "^3.8.3",
-    "vscode-test": "^1.4.0",
-    "vscode-uri": "^2.1.2"
-  }
+	"name": "danyg-go-to-test",
+	"displayName": "Go To Test",
+	"description": "Toggle between test and file with different strategies",
+	"version": "1.0.0",
+	"repository": {
+		"url": "https://github.com/danyg/go-to-test.git",
+		"type": "git"
+	},
+	"license": "MIT",
+	"icon": "assets/icon.png",
+	"homepage": "https://github.com/danyg/go-to-test",
+	"bugs": "https://github.com/danyg/go-to-test/issues",
+	"publisher": "danyg",
+	"engines": {
+		"vscode": "^1.45.1",
+		"node": ">=14.0.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"keywords": [
+		"test",
+		"spec",
+		"jest",
+		"jasmine",
+		"rspec",
+		"switcher",
+		"switch",
+		"toggle",
+		"go to"
+	],
+	"activationEvents": [
+		"onCommand:danyg-go-to-test.goToTest"
+	],
+	"main": "./out/src/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "danyg-go-to-test.goToTest",
+				"title": "Go To Test"
+			}
+		],
+		"configuration": {
+			"title": "Go To Test",
+			"properties": {
+				"goToTest.strategy": {
+					"type": "string",
+					"default": "same-directory",
+					"enum": [
+						"maven-like",
+						"maven",
+						"same-directory",
+						"__tests__",
+						"custom"
+					],
+					"markdownEnumDescriptions": [
+						"Maven Like style, where the test files are in a different directory (test instead of src) at project root level with the same directory structure as the source files and `.test.` and same extension.",
+						"Maven style, where the test files are in a different directory (test instead of main) at src level with the same directory structure as the source files and `.test.` and same extension.",
+						"Same directory style, where the test files are in the same directory as the source file, with the extra `.test.` and same extension.",
+						"__tests__ directory style, where the test are inside of a `__tests__` directory inside the same directory as the source file.",
+						"Custom, you must define `#goToTest.match#` and `#goToTest.replace#`"
+					],
+					"description": "Strategy to be used to locate or create the test file."
+				},
+				"goToTest.match": {
+					"type": "string",
+					"default": "^(?<projectPath>.*)src(?<moduleInternalPath>.*)\\.(?<ext>[tj]sx?)$",
+					"markdownDescription": "(Only used when `#goToTest.strategy#`=`custom`) RegExp which would match the source file path and create matching groups to be rearranged by `#goToTest.replace#`"
+				},
+				"goToTest.replace": {
+					"type": "string",
+					"default": "$<projectPath>test$<moduleInternalPath>.test.$<ext>",
+					"markdownDescription": "(Only used when `#goToTest.strategy#`=`custom`) Template to compose the path based on the match of the source file."
+				}
+			}
+		},
+		"keybindings": [
+			{
+				"command": "danyg-go-to-test.goToTest",
+				"key": "ctrl+shift+2",
+				"mac": "cmd+shift+2",
+				"when": "editorTextFocus"
+			}
+		]
+	},
+	"scripts": {
+		"ci:start": "Xvfb :99 -screen 0 1920x1080x24 & echo $! > ./xvfb.pid",
+		"ci:stop": "kill $(cat ./xvfb.pid)",
+		"vscode:prepublish": "npm run compile",
+		"clean": "rm -rf ./out",
+		"compile": "npm run clean && tsc -p ./ && tsconfig-replace-paths",
+		"lint": "eslint ./ --ext ts",
+		"watch": "tsc -watch -p ./",
+		"test": "npm run test:all -d",
+		"test:ci": "npm run test:all:ci -d",
+		"test:all": "npm run test:pretest && npm run test:tests",
+		"test:all:ci": "npm run test:pretest && npm run test:unit && npm run test:e2e:ci",
+		"test:pretest": "npm run compile && npm run lint",
+		"test:tests": "npm run test:unit && npm run test:e2e",
+		"test:unit": "npm run compile && node out/test-helpers/run-unit-tests.js",
+		"test:e2e": "node ./out/test-helpers/run-e2e-tests.js",
+		"test:e2e:ci": "DISPLAY=:99.0 node ./out/test-helpers/run-e2e-tests.js",
+		"test:pit": "stryker run",
+		"manual": ".vscode-test/vscode-insiders/VSCode-linux-x64/bin/code-insiders --extensionDevelopmentPath=$(pwd) $(pwd)"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "npm run lint",
+			"pre-push": "npm run test:unit"
+		}
+	},
+	"devDependencies": {
+		"@stryker-mutator/core": "^6.1.2",
+		"@stryker-mutator/mocha-framework": "^3.3.1",
+		"@stryker-mutator/mocha-runner": "^6.1.2",
+		"@stryker-mutator/typescript": "^4.0.0",
+		"@types/glob": "^7.1.1",
+		"@types/mocha": "^7.0.2",
+		"@types/node": "^13.11.0",
+		"@types/vscode": "^1.45.1",
+		"@typescript-eslint/eslint-plugin": "^2.30.0",
+		"@typescript-eslint/parser": "^2.30.0",
+		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.11.0",
+		"eslint-plugin-prettier": "^3.1.3",
+		"expect": "^26.0.1",
+		"glob": "^7.1.6",
+		"gnomon": "^1.4.6",
+		"husky": "^4.2.5",
+		"mocha": "^7.1.2",
+		"prettier": "^2.0.5",
+		"ts-mockito": "^2.6.1",
+		"tsconfig-replace-paths": "^0.0.11",
+		"typescript": "^3.8.3",
+		"vscode-test": "^1.4.0",
+		"vscode-uri": "^2.1.2"
+	},
+	"__metadata": {
+		"id": "f5a83320-f64a-4b65-a980-849160c5069b",
+		"publisherDisplayName": "danyg",
+		"publisherId": "a5d73835-d12d-4e92-a97e-7b666583611d",
+		"isPreReleaseVersion": false
+	}
 }

@@ -6,11 +6,18 @@
     "lib": ["es2019", "es2020.bigint", "es2020.string", "es2020.symbol.wellknown"],
     "sourceMap": true,
     "rootDir": ".",
-    "strict": true // enable all strict type-checking options
-    /* Additional Checks */
-    // "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
-    // "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
-    // "noUnusedParameters": true,  /* Report errors on unused parameters. */
+    "strict": true,
+    "baseUrl": "src",
+    "moduleResolution": "node",
+    "paths": {
+      "core/*": ["core/*"],
+      "exceptions/*": ["exceptions/*"],
+      "strategies/*": ["strategies/*"],
+      "vscode-adapters/*": ["vscode-adapters/*"],
+      "interfaces/*": ["interfaces/*"],
+      "test-helpers/*": ["../test-helpers/*"],
+      "tests/*": ["../tests/*"]
+    }
   },
   "exclude": ["node_modules", ".vscode-test"]
 }

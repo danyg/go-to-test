@@ -1,4 +1,4 @@
-import Strategy from '../interfaces/strategy';
+import Strategy from 'interfaces/strategy';
 
 export default class UUTestsUUStrategy implements Strategy {
   public static getInstance() {
