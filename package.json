@@ -3,12 +3,32 @@
   "displayName": "Go To Test",
   "description": "Toggle between test and file with different strategies",
   "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/danyg/go-to-test.git",
+    "type": "git"
+  },
+  "license": "MIT",
+  "icon": "assets/icon.png",
+  "homepage": "https://github.com/danyg/go-to-test",
+  "bugs": "https://github.com/danyg/go-to-test/issues",
+  "publisher": "danyg",
   "engines": {
     "vscode": "^1.45.1",
     "node": ">=14.0.0"
   },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "test",
+    "spec",
+    "jest",
+    "jasmine",
+    "rspec",
+    "switcher",
+    "switch",
+    "toggle",
+    "go to"
   ],
   "activationEvents": [
     "onCommand:danyg-go-to-test.goToTest"
@@ -26,7 +46,7 @@
       "properties": {
         "goToTest.strategy": {
           "type": "string",
-          "default": "maven-like",
+          "default": "same-directory",
           "enum": [
             "maven-like",
             "maven",
@@ -54,7 +74,15 @@
           "markdownDescription": "(Only used when `#goToTest.strategy#`=`custom`) Template to compose the path based on the match of the source file."
         }
       }
-    }
+    },
+    "keybindings": [
+      {
+        "command": "danyg-go-to-test.goToTest",
+        "key": "ctrl+shift+2",
+        "mac": "cmd+shift+2",
+        "when": "editorTextFocus"
+      }
+    ]
   },
   "scripts": {
     "ci:start": "Xvfb :99 -screen 0 1920x1080x24 & echo $! > ./xvfb.pid",
