@@ -1,9 +1,12 @@
 .vscode/**
 .vscode-test/**
 out/test/**
+out/test-helpers/**
 src/**
 .gitignore
 vsc-extension-quickstart.md
+**/node_modules
+**/stryker.conf.json
 **/tsconfig.json
 **/.eslintrc.json
 **/*.map

@@ -1,65 +1,36 @@
-# danyg-go-to-test README
+# Go To Test
 
-This is the README for your extension "danyg-go-to-test". After writing up a brief description, we recommend including the following sections.
+With this extension, you will be able to go to the test file for the current file with the press of a hotkey.
+
+Available several common test file location strategies. Is recommended to save the test file location strategy in the workspace settings so that it can be shared with your team.
+
+![Go To Test](https://user-images.githubusercontent.com/1834409/177147936-7ac1b70f-a45e-4886-9dfc-9867f2f36146.gif)
+
+![Create test file](https://user-images.githubusercontent.com/1834409/177147978-0b0c8658-e5fb-4ba5-afcf-985d2340a81a.gif)
+
+
+## Available file location strategies
+
+| Strategy name    | File Paths                                               |
+| ---------------- | -------------------------------------------------------- |
+| `same_directory` | `src/feature/file.js`<br>`src/feature/file.test.js`      |
+| `__tests__`      | `src/feature/file.ts`<br>`src/feature/__tests__/file.ts` |
+| `maven`          | `src/feature/file.java`<br>`test/feature/fileTest.java`  |
+| `maven-like`     | `src/feature/file.js`<br>`test/feature/file.test.js`     |
+| `custom`         | `configurable by regex`                                  |
+
+When the test file is not found it will create one
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Go to test
+- Creates a test when it doesn't exist
+- Custom test location strategy
 
-For example if there is an image subfolder under your extension project workspace:
+## Coming soon™ features
 
-\!\[feature X\]\(images/feature-x.png\)
+- Change suffix (e.g. `.test.` to `.spec.`)
+- Go to Source Code
+- Confirm on Create file
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Check [backlog](https://github.com/danyg/go-to-test/projects/1) for more information
