@@ -1,6 +1,6 @@
-import Strategy from '../interfaces/strategy';
-import Configuration from '../interfaces/configuration';
-import { StrategyResolveError } from '../exceptions/strategy-resolve-error';
+import Strategy from 'interfaces/strategy';
+import Configuration from 'interfaces/configuration';
+import { StrategyResolveError } from 'exceptions/strategy-resolve-error';
 
 export default class CustomStrategy implements Strategy {
   public static getInstance(config: Configuration) {

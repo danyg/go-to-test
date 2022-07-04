@@ -1,5 +1,5 @@
-import System, { Command } from '../../src/interfaces/system';
-import { Disposable } from '../../src/interfaces/disposable';
+import System, { Command } from 'interfaces/system';
+import { Disposable } from 'interfaces/disposable';
 
 type ActiveFilePath = string | null;
 

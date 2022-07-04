@@ -9,7 +9,7 @@ import {
   anyOfClass
 } from 'ts-mockito';
 import { URI } from 'vscode-uri';
-import { Disposable } from '../../src/interfaces/disposable';
+import { Disposable } from 'interfaces/disposable';
 import {
   GoToTestURI,
   GoToTestVsCodeNS,
@@ -21,7 +21,7 @@ import {
   VSCodeWindow,
   VSCodeWorkspace,
   VSCodeWorkspaceConfiguration
-} from '../../src/vscode-adapters/types';
+} from 'vscode-adapters/types';
 
 type Callback = (...args: any[]) => any;
 

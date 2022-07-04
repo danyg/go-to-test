@@ -1,4 +1,4 @@
-import System from '../interfaces/system';
+import System from 'interfaces/system';
 import { RegisterCommandFn, VSCodeTextDocument, GoToTestVsCodeNS } from './types';
 import { URI } from 'vscode-uri';
 

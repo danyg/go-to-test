@@ -1,13 +1,13 @@
-import { ExtensionContext } from '../interfaces/disposable';
-import System from '../interfaces/system';
-import UserInterface from '../interfaces/user-interface';
-import Configuration, { StrategyOption } from '../interfaces/configuration';
-import Strategy from '../interfaces/strategy';
-import MavenStrategy from '../strategies/maven-strategy';
-import MavenLikeStrategy from '../strategies/maven-like-strategy';
-import SameDirectoryStrategy from '../strategies/same-directory-strategy';
-import UUTestsUUStrategy from '../strategies/__tests__-strategy';
-import CustomStrategy from '../strategies/custom-strategy';
+import { ExtensionContext } from 'interfaces/disposable';
+import System from 'interfaces/system';
+import UserInterface from 'interfaces/user-interface';
+import Configuration, { StrategyOption } from 'interfaces/configuration';
+import Strategy from 'interfaces/strategy';
+import MavenStrategy from 'strategies/maven-strategy';
+import MavenLikeStrategy from 'strategies/maven-like-strategy';
+import SameDirectoryStrategy from 'strategies/same-directory-strategy';
+import UUTestsUUStrategy from 'strategies/__tests__-strategy';
+import CustomStrategy from 'strategies/custom-strategy';
 
 export default class GoToTest {
   private strategies: Map<StrategyOption, Strategy>;

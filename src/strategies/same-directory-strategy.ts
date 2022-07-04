@@ -1,4 +1,4 @@
-import Strategy from '../interfaces/strategy';
+import Strategy from 'interfaces/strategy';
 
 export default class SameDirectoryStrategy implements Strategy {
   public static getInstance() {

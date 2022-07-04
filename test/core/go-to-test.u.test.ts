@@ -1,9 +1,9 @@
 import * as expect from 'expect';
 
-import { StrategyOption } from '../../src/interfaces/configuration';
+import { StrategyOption } from 'interfaces/configuration';
 
-import { ConfigurationDouble } from '../../test-helpers/mocks/configuration-double';
-import { TestBuilder } from '../../test-helpers/TestBuilder';
+import { ConfigurationDouble } from 'test-helpers/mocks/configuration-double';
+import { TestBuilder } from 'test-helpers/TestBuilder';
 
 describe('GoToTest', () => {
   it('should do nothing WHEN command is triggered and there is no active editor', async () => {

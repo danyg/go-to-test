@@ -1,4 +1,4 @@
-import Configuration, { StrategyOption } from '../interfaces/configuration';
+import Configuration, { StrategyOption } from 'interfaces/configuration';
 import { GetConfigurationFn, GoToTestVsCodeNS } from './types';
 
 const SECTIONS = {

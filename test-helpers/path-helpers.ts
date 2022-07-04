@@ -1,4 +1,4 @@
-// import * as myExtension from '../../extension';
+// import * as myExtension from '../extension';
 const rts = (toConvert: string | RegExp) =>
   toConvert instanceof RegExp ? toConvert.source : toConvert;
 export const pathOsAgnostic = (pathStr: string | RegExp) =>

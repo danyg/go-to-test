@@ -1,5 +1,5 @@
-import { ExtensionContext } from '../interfaces/disposable';
-import GoToTest from '../core/go-to-test';
+import { ExtensionContext } from 'interfaces/disposable';
+import GoToTest from 'core/go-to-test';
 import VsCodeSystem from './vscode-system';
 import VSCodeUI from './vscode-ui';
 import VSCodeConfiguration from './vscode-configuration';

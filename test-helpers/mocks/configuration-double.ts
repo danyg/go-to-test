@@ -1,4 +1,4 @@
-import Configuration, { StrategyOption } from '../../src/interfaces/configuration';
+import Configuration, { StrategyOption } from 'interfaces/configuration';
 
 export class ConfigurationDouble implements Configuration {
   static getInstance() {

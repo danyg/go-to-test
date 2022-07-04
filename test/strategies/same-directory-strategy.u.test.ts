@@ -1,7 +1,7 @@
-import { StrategyOption } from '../../src/interfaces/configuration';
+import { StrategyOption } from 'interfaces/configuration';
 
-import { ConfigurationDouble } from '../../test-helpers/mocks/configuration-double';
-import { TestBuilder } from '../../test-helpers/TestBuilder';
+import { ConfigurationDouble } from 'test-helpers/mocks/configuration-double';
+import { TestBuilder } from 'test-helpers/TestBuilder';
 
 describe('Same Directory Strategy', () => {
   it('should use same-directory strategy WHEN the configuration says so', async () => {
