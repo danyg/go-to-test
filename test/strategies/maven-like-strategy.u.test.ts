@@ -63,4 +63,17 @@ describe('Maven Like Strategy', () => {
 
     then.theTestFile('/test/libs/my-file.test.thisIsAVerboseExtension').isOpened();
   });
+
+  it('should go to source file when user is editing the test file', async () => {
+    const { given, when, then } = TestBuilder.build();
+    given
+      .theFollowingConfiguration(
+        ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN_LIKE)
+      )
+      .and.theUserOpens('/test/module/sub-module/sub-sub-module/my-file.test.js');
+
+    await when.goToTestIsActioned();
+
+    then.theTestFile('/src/module/sub-module/sub-sub-module/my-file.js').isOpened();
+  });
 });
