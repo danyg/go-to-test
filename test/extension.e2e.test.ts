@@ -1,6 +1,6 @@
 import * as expect from 'expect';
 import * as vscode from 'vscode';
-import { given, when, then } from 'test-helpers/gramar-bdd';
+import { given, when, then } from 'test-helpers/grammar-bdd';
 import { endWith, pathOsAgnostic } from 'test-helpers/path-helpers';
 
 describe('Extension Test Suite', () => {
