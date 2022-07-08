@@ -1,14 +1,21 @@
 import { EmptyPathTemplate } from 'exceptions/empty-path-template';
 import { InvalidPathTemplate } from 'exceptions/invalid-path-template';
 
+const escapeRegExp = (regExpString: string) =>
+  regExpString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+
+const dirSeparator = '[\\/]';
+const dirSeparatorMatcher = new RegExp(escapeRegExp(dirSeparator), 'g');
+const variableMatcher = /(\$<\w+>)/g;
+
 const patternsToRegExp = new Map<RegExp, string>();
-patternsToRegExp.set(/\$<directory>/g, '([^\\/]+)[\\/]');
-patternsToRegExp.set(/\$<moduleInternalPath>/g, '(.+)[\\/]');
-patternsToRegExp.set(/\$<ext>/, '.([w]+)$');
-const patternMatcher = /(\$<\w+>)/g;
+patternsToRegExp.set(/\$<directory>/g, `([^\\/]+)${dirSeparator}`);
+patternsToRegExp.set(/\$<moduleInternalPath>/g, `(.+)${dirSeparator}`);
+patternsToRegExp.set(/\$<filename>/, '([\\w\\d\\s\\._-]+)');
+patternsToRegExp.set(/\$<ext>/, '\\.([\\w]+)$');
 
 type PathTemplate = string;
-type PartialTransformedPathTemplate = string;
+type PartialPathRegExp = string;
 
 const getPronounIsAre = (elementsLength: number) => (elementsLength > 1 ? 'are' : 'is');
 
@@ -20,25 +27,55 @@ export class PathPatternsConverter {
   private constructor() {}
 
   public toRegExp(pathTemplate: PathTemplate): RegExp {
-    if (pathTemplate === '') {
-      throw new EmptyPathTemplate('Given path template is empty');
-    }
+    this.throwWhenEmptyTemplate(pathTemplate);
+
     return this.applyPatterns(pathTemplate);
   }
 
-  private applyPatterns(pathTemplate: PathTemplate): RegExp {
-    let transformedPathTemplate: PartialTransformedPathTemplate = pathTemplate;
-    patternsToRegExp.forEach((equivalentRegexp, pattern) => {
-      transformedPathTemplate = transformedPathTemplate.replace(pattern, equivalentRegexp);
-    });
+  public toReplacePattern(pathTemplate: PathTemplate) {
+    this.throwWhenEmptyTemplate(pathTemplate);
+    let partialPathTemplate = this.toPartialPathRegExp(pathTemplate);
 
-    this.throwWhenInvalidPatterns(transformedPathTemplate);
+    let counter = 0;
+    partialPathTemplate = partialPathTemplate
+      .replace(/\([^\)]+\)/g, () => `$${++counter}`)
+      .replace(dirSeparatorMatcher, '/'); // TODO convert to current os directory separator
 
-    return new RegExp(transformedPathTemplate);
+    partialPathTemplate = this.sanitizeRegExpSpecialChars(partialPathTemplate);
+    return partialPathTemplate;
   }
 
-  private throwWhenInvalidPatterns(partialPathTemplate: PartialTransformedPathTemplate) {
-    const matches = partialPathTemplate.match(patternMatcher);
+  private sanitizeRegExpSpecialChars(partialTransformedPathTemplate: string): string {
+    return partialTransformedPathTemplate.replace('\\.', '.').replace(/\$$/, '');
+  }
+
+  private throwWhenEmptyTemplate(pathTemplate: string) {
+    if (pathTemplate === '') {
+      throw new EmptyPathTemplate('Given path template is empty');
+    }
+  }
+
+  private applyPatterns(pathTemplate: PathTemplate): RegExp {
+    const partialTransformedPathTemplate = this.toPartialPathRegExp(pathTemplate);
+
+    this.throwWhenInvalidPatterns(partialTransformedPathTemplate);
+
+    return new RegExp(partialTransformedPathTemplate);
+  }
+
+  private toPartialPathRegExp(pathTemplate: string): PartialPathRegExp {
+    let partialTransformedPathTemplate: PartialPathRegExp = pathTemplate;
+    patternsToRegExp.forEach((equivalentRegexp, pattern) => {
+      partialTransformedPathTemplate = partialTransformedPathTemplate.replace(
+        pattern,
+        equivalentRegexp
+      );
+    });
+    return partialTransformedPathTemplate;
+  }
+
+  private throwWhenInvalidPatterns(partialPathTemplate: PartialPathRegExp) {
+    const matches = partialPathTemplate.match(variableMatcher);
     if (matches) {
       const message = this.getInvalidPathTemplateMessage(matches);
       throw new InvalidPathTemplate(message);
