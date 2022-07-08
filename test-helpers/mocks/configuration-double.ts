@@ -8,6 +8,8 @@ export class ConfigurationDouble implements Configuration {
   private _strategy!: StrategyOption;
   private _match!: RegExp;
   private _replace!: string;
+  private _sourcePattern!: string;
+  private _testPattern!: string;
 
   public get strategy(): StrategyOption {
     return this._strategy;
@@ -19,6 +21,14 @@ export class ConfigurationDouble implements Configuration {
 
   public get replace(): string {
     return this._replace;
+  }
+
+  public get sourcePattern(): string {
+    return this._sourcePattern;
+  }
+
+  public get testPattern(): string {
+    return this._testPattern;
   }
 
   withStrategy(strategy: StrategyOption) {
@@ -38,6 +48,16 @@ export class ConfigurationDouble implements Configuration {
 
   withReplace(replace: string) {
     this._replace = replace;
+    return this;
+  }
+
+  withCustomSourcePattern(sourcePattern: string) {
+    this._sourcePattern = sourcePattern;
+    return this;
+  }
+
+  withCustomTestPattern(testPattern: string) {
+    this._testPattern = testPattern;
     return this;
   }
 }
