@@ -1,18 +1,16 @@
 import { EmptyPathTemplate } from 'exceptions/empty-path-template';
 import { InvalidPathTemplate } from 'exceptions/invalid-path-template';
 
-const escapeRegExp = (regExpString: string) =>
-  regExpString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-
-const dirSeparator = '[\\/]';
-const dirSeparatorMatcher = new RegExp(escapeRegExp(dirSeparator), 'g');
+const dirSeparator = '[\\\\/]';
 const variableMatcher = /(\$<\w+>)/g;
+const regExpGroupMatcher = /\([^\)]+\)/g;
 
 const patternsToRegExp = new Map<RegExp, string>();
-patternsToRegExp.set(/\$<directory>/g, `([^\\/]+)${dirSeparator}`);
-patternsToRegExp.set(/\$<moduleInternalPath>/g, `(.+)${dirSeparator}`);
-patternsToRegExp.set(/\$<filename>/, '([\\w\\d\\s\\._-]+)');
-patternsToRegExp.set(/\$<ext>/, '\\.([\\w]+)$');
+patternsToRegExp.set(/[\\\/]/g, `(${dirSeparator})`);
+patternsToRegExp.set(/\$<directory>/g, `([^\\\/]+)(${dirSeparator})`);
+patternsToRegExp.set(/\$<moduleInternalPath>/g, `(.+)(${dirSeparator})`);
+patternsToRegExp.set(/\$<filename>/, '([\\w\\s\\.-]+)');
+patternsToRegExp.set(/\$<ext>/, '\\.([\\w\\s-]+)$');
 
 type PathTemplate = string;
 type PartialPathRegExp = string;
@@ -37,9 +35,7 @@ export class PathPatternsConverter {
     let partialPathTemplate = this.toPartialPathRegExp(pathTemplate);
 
     let counter = 0;
-    partialPathTemplate = partialPathTemplate
-      .replace(/\([^\)]+\)/g, () => `$${++counter}`)
-      .replace(dirSeparatorMatcher, '/'); // TODO convert to current os directory separator
+    partialPathTemplate = partialPathTemplate.replace(regExpGroupMatcher, () => `$${++counter}`);
 
     partialPathTemplate = this.sanitizeRegExpSpecialChars(partialPathTemplate);
     return partialPathTemplate;
@@ -93,9 +89,9 @@ export class PathPatternsConverter {
     let invalidPatterns = '';
     if (matchesArray.length > 1) {
       const last = matchesArray.pop();
-      invalidPatterns = `${matchesArray.join(',')} and ${last}`;
+      invalidPatterns = `${matchesArray.join(', ')} and ${last}`;
     } else {
-      invalidPatterns = matchesArray.join(',');
+      invalidPatterns = matchesArray.toString();
     }
     return invalidPatterns;
   }
