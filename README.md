@@ -2,7 +2,7 @@
 
 ![Go To Test CI](https://github.com/danyg/go-to-test/workflows/Go%20To%20Test%20CI/badge.svg)
 
-With this extension, you will be able to go to the test file for the current file with the press of a hotkey.
+With this extension, you will be able to go to the test file (or create it) for the current file with the press of a hotkey. Also, go to the source file using the same hotkey.
 
 Available several common test file location strategies. Is recommended to save the test file location strategy in the workspace settings so that it can be shared with your team.
 
@@ -12,26 +12,28 @@ Available several common test file location strategies. Is recommended to save t
 
 ## Available file location strategies
 
-| Strategy name    | File Paths                                               |
-| ---------------- | -------------------------------------------------------- |
-| `same_directory` | `src/feature/file.js`<br>`src/feature/file.test.js`      |
-| `__tests__`      | `src/feature/file.ts`<br>`src/feature/__tests__/file.ts` |
-| `maven`          | `src/feature/file.java`<br>`test/feature/fileTest.java`  |
-| `maven-like`     | `src/feature/file.js`<br>`test/feature/file.test.js`     |
-| `custom`         | `configurable by regex`                                  |
+| Strategy name    | File Paths                                               |             Go to Test              |            Go To Source             |
+| ---------------- | -------------------------------------------------------- | :---------------------------------: | :---------------------------------: |
+| `same_directory` | `src/feature/file.ts`<br>`src/feature/file.test.ts`      | <span style="color: green">✔</span> | <span style="color: green">✔</span> |
+| `__tests__`      | `src/feature/file.ts`<br>`src/feature/__tests__/file.ts` | <span style="color: green">✔</span> | <span style="color: green">✔</span> |
+| `maven`          | `src/feature/file.java`<br>`test/feature/fileTest.java`  | <span style="color: green">✔</span> | <span style="color: green">✔</span> |
+| `maven-like`     | `src/feature/file.ts`<br>`test/feature/file.test.ts`     | <span style="color: green">✔</span> | <span style="color: green">✔</span> |
+| `custom`         | `configurable by regex`                                  | <span style="color: green">✔</span> |  <span style="color: red">✘</span>  |
 
 When the test file is not found it will create one
 
 ## Features
 
 - Go to test
+- Go to source \*
 - Creates a test when it doesn't exist
 - Custom test location strategy
+
+\*: except for custom strategy.
 
 ## Coming soon™ features
 
 - Change suffix (e.g. `.test.` to `.spec.`)
-- Go to Source Code
 - Confirm on Create file
 
 Check [backlog](https://github.com/danyg/go-to-test/projects/1) for more information
