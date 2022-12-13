@@ -3,7 +3,9 @@ import * as vscode from 'vscode';
 import { given, when, then } from 'test-helpers/grammar-bdd';
 import { endWith, pathOsAgnostic } from 'test-helpers/path-helpers';
 
-describe('Extension Test Suite', () => {
+describe('Extension Test Suite', function () {
+  this.timeout(5000);
+
   it('Test Preconditions are met', () => {
     const rootPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
     expect(rootPath).not.toBeUndefined();
