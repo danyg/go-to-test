@@ -13,15 +13,19 @@ describe('Custom Strategy', () => {
       .theFollowingConfiguration(
         ConfigurationDouble.getInstance()
           .withStrategy(StrategyOption.CUSTOM)
-          .withMatch(/(.*)\/([^\/]+)\.([\w]+)/)
-          .withReplace('$1/testGoesHere/$2.IntegrationTest.$3')
+          .withMatch(/([^\\\/]+)[\\\/]([^\\\/]+)[\\\/](.+)[\\\/]([^\\\/]+)\.([\w]+)$/)
+          .withCustomSourcePattern('$<directory>/$<directory>/$<moduleInternalPath>.$<ext>')
+          .withCustomTestPattern(
+            '$<directory>/$<directory>/testsGoesHere/$<moduleInternalPath>.$<ext>'
+          )
+          .withReplace('$1/$2/testsGoesHere/$3/$4.IntegrationTest.$5')
       )
       .and.theUserOpens('/src/module/sub-module/sub-sub-module/my-file.js');
 
     await when.goToTestIsActioned();
 
     then
-      .theTestFile('/src/module/sub-module/sub-sub-module/testGoesHere/my-file.IntegrationTest.js')
+      .theTestFile('/src/module/testsGoesHere/sub-module/sub-sub-module/my-file.IntegrationTest.js')
       .isOpened();
   });
 
@@ -65,5 +69,23 @@ describe('Custom Strategy', () => {
     expect(error.message).toEqual(
       `Could not match RegExp: "${badRegExpConfig.toString()}" With file path: "${openedSourceCode}". Please ensure settings.json "go-to-test.match" is a valid RegExp and will match as expected.`
     );
+  });
+
+  it.skip('[WIP] should go to source file when user is editing the test file', async () => {
+    const { given, when, then } = TestBuilder.build();
+    given
+      .theFollowingConfiguration(
+        ConfigurationDouble.getInstance()
+          .withStrategy(StrategyOption.CUSTOM)
+          .withMatch(/(.*)\/([^\/]+)\.([\w]+)/)
+          .withReplace('$1/testGoesHere/$2.IntegrationTest.$3')
+      )
+      .and.theUserOpens(
+        '/src/module/sub-module/sub-sub-module/testGoesHere/my-file.IntegrationTest.js'
+      );
+
+    await when.goToTestIsActioned();
+
+    then.theTestFile('/src/module/sub-module/sub-sub-module/my-file.js').isOpened();
   });
 });

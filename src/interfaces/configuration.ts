@@ -11,4 +11,7 @@ export default interface Configuration {
   readonly strategy: StrategyOption;
   readonly match: RegExp;
   readonly replace: string;
+
+  readonly sourcePattern: string;
+  readonly testPattern: string;
 }

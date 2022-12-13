@@ -73,4 +73,17 @@ describe('Maven Strategy', () => {
       )
       .isOpened();
   });
+
+  it('should go to source file when user is editing the test file', async () => {
+    const { given, when, then } = TestBuilder.build();
+    given
+      .theFollowingConfiguration(
+        ConfigurationDouble.getInstance().withStrategy(StrategyOption.MAVEN)
+      )
+      .and.theUserOpens('/src/test/java/com/company/package1/MyClassTest.java');
+
+    await when.goToTestIsActioned();
+
+    then.theTestFile('/src/main/java/com/company/package1/MyClass.java').isOpened();
+  });
 });

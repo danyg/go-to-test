@@ -41,4 +41,11 @@ export default class VSCodeConfiguration implements Configuration {
   public get replace(): string {
     return this.getConfiguration().get(SECTIONS.REPLACE) ?? '$1test$2.spec.$3';
   }
+
+  public get sourcePattern(): string {
+    throw new Error('Implement Me');
+  }
+  public get testPattern(): string {
+    throw new Error('Implement Me');
+  }
 }
