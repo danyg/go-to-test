@@ -128,7 +128,7 @@
     "glob": "^7.1.6",
     "gnomon": "^1.4.6",
     "husky": "^4.2.5",
-    "mocha": "^7.1.2",
+    "mocha": "^10.2.0",
     "prettier": "^2.0.5",
     "ts-mockito": "^2.6.1",
     "tsconfig-replace-paths": "^0.0.11",
