@@ -48,8 +48,9 @@ jobs:
       - name: E2E Tests
         run: npm run test:e2e:ci
 
-      - name: Pit Testing
-        run: npm run test:pit
+      # Disabled for the moment until #34
+      # - name: Pit Testing
+      #   run: npm run test:pit
 
       - name: Archive Pit Testing Results
         uses: actions/upload-artifact@v2
